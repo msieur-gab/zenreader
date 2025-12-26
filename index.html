@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="theme-color" content="#1a1a2e">
+  <meta name="theme-color" content="#4f46e5">
   <meta name="description" content="ZenReader - Save and read articles in a clean, distraction-free environment">
 
   <title>ZenReader</title>
@@ -13,21 +13,28 @@
   <link rel="apple-touch-icon" href="/icons/icon-192.png">
   <link rel="stylesheet" href="/css/styles.css">
 </head>
-<body data-view="library">
+<body data-theme="light">
 
   <!-- Library View -->
-  <section id="library-view" class="view" aria-label="Article Library">
-    <header class="header">
-      <h1 class="header__title">ZenReader</h1>
-      <div class="header__actions">
-        <button id="settings-btn" class="btn btn--icon" aria-label="Settings" title="Settings">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <circle cx="12" cy="12" r="3"></circle>
-            <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"></path>
+  <section id="library-view" class="library-view" aria-label="Article Library">
+    <header class="library__header">
+      <h1 class="library__title">ZenReader</h1>
+      <div class="library__actions">
+        <button id="theme-toggle-btn" class="btn btn--icon" aria-label="Toggle theme" title="Toggle theme">
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="5"></circle>
+            <line x1="12" y1="1" x2="12" y2="3"></line>
+            <line x1="12" y1="21" x2="12" y2="23"></line>
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+            <line x1="1" y1="12" x2="3" y2="12"></line>
+            <line x1="21" y1="12" x2="23" y2="12"></line>
+            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
           </svg>
         </button>
         <button id="add-btn" class="btn btn--icon" aria-label="Add article" title="Add article">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <line x1="12" y1="5" x2="12" y2="19"></line>
             <line x1="5" y1="12" x2="19" y2="12"></line>
           </svg>
@@ -35,136 +42,143 @@
       </div>
     </header>
 
-    <main id="library" class="library">
-      <div id="article-grid" class="grid">
+    <main class="library__main">
+      <div id="article-grid" class="library__grid">
         <!-- <article-card> elements populated here -->
       </div>
 
-      <div id="empty-state" class="empty" hidden>
-        <svg class="empty__icon" width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+      <div id="empty-state" class="library__empty">
+        <svg class="icon--large" width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
           <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
           <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
         </svg>
-        <h2 class="empty__title">No articles yet</h2>
-        <p class="empty__text">Share a URL from any app or tap + to add</p>
+        <h2>No articles yet</h2>
+        <p>Share a URL from any app or tap + to add</p>
       </div>
     </main>
   </section>
 
   <!-- Reader View -->
-  <section id="reader-view" class="view" hidden aria-label="Article Reader">
-    <header class="reader-header">
-      <button id="back-btn" class="btn btn--icon" aria-label="Back to library">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <line x1="19" y1="12" x2="5" y2="12"></line>
-          <polyline points="12 19 5 12 12 5"></polyline>
-        </svg>
-      </button>
-      <div class="reader-header__meta">
-        <h1 id="reader-title" class="reader-header__title"></h1>
-        <p id="reader-site" class="reader-header__site"></p>
+  <section id="reader-view" class="reader-view" hidden aria-label="Article Reader">
+    <header id="reader-header" class="reader__header">
+      <div class="reader__nav">
+        <button id="back-btn" class="btn btn--icon" aria-label="Back to library">
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="19" y1="12" x2="5" y2="12"></line>
+            <polyline points="12 19 5 12 12 5"></polyline>
+          </svg>
+        </button>
       </div>
-      <button id="export-article-btn" class="btn btn--icon" aria-label="Export as Markdown" title="Export as Markdown">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-          <polyline points="7 10 12 15 17 10"></polyline>
-          <line x1="12" y1="15" x2="12" y2="3"></line>
-        </svg>
-      </button>
-      <button id="delete-article-btn" class="btn btn--icon btn--danger" aria-label="Delete article" title="Delete article">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <polyline points="3 6 5 6 21 6"></polyline>
-          <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
-        </svg>
-      </button>
+      <div class="reader__meta">
+        <h1 id="reader-title" class="reader__title"></h1>
+        <p id="reader-site" class="reader__site"></p>
+      </div>
+      <div class="reader__actions">
+        <button id="settings-btn" class="btn btn--icon" aria-label="Settings" title="Settings">
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="3"></circle>
+            <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"></path>
+          </svg>
+        </button>
+        <button id="export-btn" class="btn btn--icon" aria-label="Export" title="Export as Markdown">
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+            <polyline points="7 10 12 15 17 10"></polyline>
+            <line x1="12" y1="15" x2="12" y2="3"></line>
+          </svg>
+        </button>
+        <button id="delete-btn" class="btn btn--icon btn--danger" aria-label="Delete" title="Delete article">
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="3 6 5 6 21 6"></polyline>
+            <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+          </svg>
+        </button>
+      </div>
     </header>
 
-    <article id="reader-content" class="reader-content">
+    <article id="reader-content" class="reader__content">
       <!-- Rendered markdown here -->
     </article>
-
-    <!-- Reader Footer with Settings Button -->
-    <footer id="reader-footer" class="reader-footer">
-      <button id="settings-footer-btn" class="reader-footer__btn" aria-label="Reading settings">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <circle cx="12" cy="12" r="3"></circle>
-          <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"></path>
-        </svg>
-        <span>Reading Settings</span>
-      </button>
-    </footer>
 
     <div id="reader-progress" class="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
       <div class="progress-bar__fill"></div>
     </div>
+  </section>
 
-    <!-- Settings Sheet Backdrop -->
-    <div id="settings-sheet-backdrop" class="sheet-backdrop"></div>
-
-    <!-- Settings Bottom Sheet -->
-    <div id="settings-sheet" class="settings-sheet" role="dialog" aria-label="Reading settings">
-      <div class="settings-sheet__handle"></div>
-      <div class="settings-sheet__content settings">
-        <!-- Theme -->
-        <div class="setting">
-          <label class="setting__label">Theme</label>
-          <div class="setting__options theme-options">
-            <button type="button" class="theme-btn theme-btn--light" data-theme="light" aria-label="Light theme">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <circle cx="12" cy="12" r="5"></circle>
-                <line x1="12" y1="1" x2="12" y2="3"></line>
-                <line x1="12" y1="21" x2="12" y2="23"></line>
-                <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
-                <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
-                <line x1="1" y1="12" x2="3" y2="12"></line>
-                <line x1="21" y1="12" x2="23" y2="12"></line>
-                <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
-                <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
-              </svg>
-            </button>
-            <button type="button" class="theme-btn theme-btn--sepia" data-theme="sepia" aria-label="Sepia theme">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
-                <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
-              </svg>
-            </button>
-            <button type="button" class="theme-btn theme-btn--dark" data-theme="dark" aria-label="Dark theme">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
-              </svg>
-            </button>
-          </div>
-        </div>
-
-        <!-- Font Size -->
-        <div class="setting">
-          <label class="setting__label">
-            Font Size
-            <span id="sheet-font-size-value" class="setting__value">100%</span>
-          </label>
-          <input type="range" id="sheet-font-size-slider" class="slider" min="75" max="150" step="5" value="100">
-        </div>
-
-        <!-- Font Family -->
-        <div class="setting">
-          <label class="setting__label">Font Family</label>
-          <div class="setting__options">
-            <button type="button" class="font-btn" data-font="serif">Serif</button>
-            <button type="button" class="font-btn" data-font="sans">Sans</button>
-          </div>
-        </div>
-
-        <!-- Line Height -->
-        <div class="setting">
-          <label class="setting__label">
-            Line Spacing
-            <span id="sheet-line-height-value" class="setting__value">Normal</span>
-          </label>
-          <input type="range" id="sheet-line-height-slider" class="slider" min="140" max="220" step="10" value="180">
+  <!-- Settings Sidebar -->
+  <aside id="sidebar" class="sidebar" aria-label="Settings">
+    <header class="sidebar__header">
+      <h2 class="sidebar__title">Settings</h2>
+      <button id="close-sidebar-btn" class="btn btn--icon" aria-label="Close">
+        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="18" y1="6" x2="6" y2="18"></line>
+          <line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+      </button>
+    </header>
+    <div class="sidebar__content settings">
+      <!-- Theme -->
+      <div class="setting">
+        <label class="setting__label">Theme</label>
+        <div class="setting__options">
+          <button type="button" class="theme-btn theme-btn--light" data-theme="light" aria-label="Light theme">
+            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="5"></circle>
+              <line x1="12" y1="1" x2="12" y2="3"></line>
+              <line x1="12" y1="21" x2="12" y2="23"></line>
+              <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+              <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+              <line x1="1" y1="12" x2="3" y2="12"></line>
+              <line x1="21" y1="12" x2="23" y2="12"></line>
+              <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+              <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+            </svg>
+          </button>
+          <button type="button" class="theme-btn theme-btn--sepia" data-theme="sepia" aria-label="Sepia theme">
+            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+              <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+            </svg>
+          </button>
+          <button type="button" class="theme-btn theme-btn--dark" data-theme="dark" aria-label="Dark theme">
+            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+            </svg>
+          </button>
         </div>
       </div>
+
+      <!-- Font Size -->
+      <div class="setting">
+        <label class="setting__label">
+          Font Size
+          <span id="font-size-value" class="setting__value">100%</span>
+        </label>
+        <input type="range" id="font-size-slider" class="slider" min="75" max="150" step="5" value="100">
+      </div>
+
+      <!-- Font Family -->
+      <div class="setting">
+        <label class="setting__label">Font Family</label>
+        <div class="setting__options">
+          <button type="button" class="font-btn" data-font="serif">Serif</button>
+          <button type="button" class="font-btn" data-font="sans">Sans</button>
+        </div>
+      </div>
+
+      <!-- Line Spacing -->
+      <div class="setting">
+        <label class="setting__label">
+          Line Spacing
+          <span id="line-height-value" class="setting__value">Normal</span>
+        </label>
+        <input type="range" id="line-height-slider" class="slider" min="140" max="220" step="20" value="180">
+      </div>
     </div>
-  </section>
+  </aside>
+
+  <!-- Sidebar Backdrop -->
+  <div id="sidebar-backdrop" class="sidebar__backdrop"></div>
 
   <!-- Add Modal -->
   <dialog id="add-modal" class="modal">
@@ -172,7 +186,7 @@
       <header class="modal__header">
         <h2 class="modal__title">Add Article</h2>
         <button type="button" id="close-modal-btn" class="btn btn--icon" aria-label="Close">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <line x1="18" y1="6" x2="6" y2="18"></line>
             <line x1="6" y1="6" x2="18" y2="18"></line>
           </svg>
@@ -189,7 +203,7 @@
           required
           autocomplete="off"
         >
-        <p id="detected-title" class="detected-title" hidden></p>
+        <p id="status-text" class="status-text" hidden></p>
         <div id="add-progress" class="add-progress" hidden>
           <div class="add-progress__fill"></div>
         </div>
@@ -197,92 +211,15 @@
       </div>
 
       <footer class="modal__footer">
-        <button type="button" id="cancel-add-btn" class="btn btn--secondary">Cancel</button>
-        <button type="submit" id="save-add-btn" class="btn btn--primary">
-          <span class="btn__text">Save</span>
-        </button>
+        <button type="button" id="cancel-btn" class="btn btn--secondary">Cancel</button>
+        <button type="submit" id="save-btn" class="btn btn--primary">Save</button>
       </footer>
     </form>
   </dialog>
 
-  <!-- Settings Modal -->
-  <dialog id="settings-modal" class="modal">
-    <div class="modal__content">
-      <header class="modal__header">
-        <h2 class="modal__title">Settings</h2>
-        <button type="button" id="close-settings-btn" class="btn btn--icon" aria-label="Close">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <line x1="18" y1="6" x2="6" y2="18"></line>
-            <line x1="6" y1="6" x2="18" y2="18"></line>
-          </svg>
-        </button>
-      </header>
-
-      <div class="modal__body settings">
-        <!-- Theme -->
-        <div class="setting">
-          <label class="setting__label">Theme</label>
-          <div class="setting__options theme-options">
-            <button type="button" class="theme-btn theme-btn--light" data-theme="light" aria-label="Light theme">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <circle cx="12" cy="12" r="5"></circle>
-                <line x1="12" y1="1" x2="12" y2="3"></line>
-                <line x1="12" y1="21" x2="12" y2="23"></line>
-                <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
-                <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
-                <line x1="1" y1="12" x2="3" y2="12"></line>
-                <line x1="21" y1="12" x2="23" y2="12"></line>
-                <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
-                <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
-              </svg>
-            </button>
-            <button type="button" class="theme-btn theme-btn--sepia" data-theme="sepia" aria-label="Sepia theme">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
-                <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
-              </svg>
-            </button>
-            <button type="button" class="theme-btn theme-btn--dark" data-theme="dark" aria-label="Dark theme">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
-              </svg>
-            </button>
-          </div>
-        </div>
-
-        <!-- Font Size -->
-        <div class="setting">
-          <label class="setting__label">
-            Font Size
-            <span id="font-size-value" class="setting__value">100%</span>
-          </label>
-          <input type="range" id="font-size-slider" class="slider" min="75" max="150" step="5" value="100">
-        </div>
-
-        <!-- Font Family -->
-        <div class="setting">
-          <label class="setting__label">Font Family</label>
-          <div class="setting__options">
-            <button type="button" class="font-btn" data-font="serif">Serif</button>
-            <button type="button" class="font-btn" data-font="sans">Sans</button>
-          </div>
-        </div>
-
-        <!-- Line Height -->
-        <div class="setting">
-          <label class="setting__label">
-            Line Spacing
-            <span id="line-height-value" class="setting__value">Normal</span>
-          </label>
-          <input type="range" id="line-height-slider" class="slider" min="140" max="220" step="10" value="180">
-        </div>
-      </div>
-    </div>
-  </dialog>
-
   <!-- Offline Indicator -->
   <div id="offline-indicator" class="offline" hidden aria-live="polite">
-    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+    <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
       <line x1="1" y1="1" x2="23" y2="23"></line>
       <path d="M16.72 11.06A10.94 10.94 0 0 1 19 12.55"></path>
       <path d="M5 12.55a10.94 10.94 0 0 1 5.17-2.39"></path>

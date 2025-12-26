@@ -182,15 +182,11 @@ function handleKeyDown(e) {
   // Ignore if focused on input
   if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
 
-  // Only handle in reader view (check body attribute)
-  if (document.body.dataset.view !== 'reader') return;
+  // Only handle if reader view is visible
+  const readerView = document.getElementById('reader-view');
+  if (!readerView || readerView.hidden) return;
 
   switch (e.key) {
-    case 'Escape':
-      // Show UI if hidden
-      if (onSwipeDown) onSwipeDown();
-      break;
-
     case 'f':
     case 'F':
       // Toggle fullscreen

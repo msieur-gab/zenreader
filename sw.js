@@ -3,7 +3,7 @@
  * Handles offline caching and share target requests
  */
 
-const CACHE_NAME = 'zenreader-v5';
+const CACHE_NAME = 'zenreader-v6';
 const STATIC_ASSETS = [
   '/',
   '/index.html',

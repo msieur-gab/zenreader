@@ -8,7 +8,7 @@ import * as api from './api.js';
 import * as ui from './ui.js';
 import { initElements } from './ui.js';
 import { renderMarkdown } from './markdown.js';
-import { initGestures, destroyGestures } from './gestures.js';
+import { initGestures } from './gestures.js';
 import './components/article-card.js';
 
 // ========================================
@@ -241,12 +241,21 @@ function attachEventListeners() {
     ui.openAddModal();
   });
 
+  // Theme toggle button (library header)
+  ui.elements.themeToggleBtn?.addEventListener('click', () => {
+    const themes = ['light', 'sepia', 'dark'];
+    const currentIndex = themes.indexOf(ui.state.settings.theme);
+    const nextTheme = themes[(currentIndex + 1) % themes.length];
+    ui.setTheme(nextTheme);
+    saveSettings();
+  });
+
   // Modal close buttons
   ui.elements.closeModalBtn.addEventListener('click', () => {
     ui.closeAddModal();
   });
 
-  ui.elements.cancelAddBtn.addEventListener('click', () => {
+  ui.elements.cancelBtn.addEventListener('click', () => {
     ui.closeAddModal();
   });
 
@@ -273,21 +282,36 @@ function attachEventListeners() {
     ui.showLibrary();
   });
 
-  // Export article button (in reader)
-  ui.elements.exportArticleBtn.addEventListener('click', async () => {
+  // Settings button (opens sidebar)
+  ui.elements.settingsBtn.addEventListener('click', () => {
+    ui.openSidebar();
+  });
+
+  // Export button
+  ui.elements.exportBtn.addEventListener('click', async () => {
     const id = ui.state.currentArticleId;
     if (id) {
       await exportArticle(id);
     }
   });
 
-  // Delete article button (in reader)
-  ui.elements.deleteArticleBtn.addEventListener('click', async () => {
+  // Delete button
+  ui.elements.deleteBtn.addEventListener('click', async () => {
     const id = ui.state.currentArticleId;
     const article = ui.state.articles.find((a) => a.id === id);
     if (article) {
       await deleteArticle(id, article.title);
     }
+  });
+
+  // Close sidebar button
+  ui.elements.closeSidebarBtn?.addEventListener('click', () => {
+    ui.closeSidebar();
+  });
+
+  // Close sidebar on backdrop click
+  ui.elements.sidebarBackdrop?.addEventListener('click', () => {
+    ui.closeSidebar();
   });
 
   // Article card events (delegated)
@@ -301,10 +325,10 @@ function attachEventListeners() {
 
   // Keyboard navigation
   document.addEventListener('keydown', (e) => {
-    // Escape to go back or close modal
+    // Escape to go back or close
     if (e.key === 'Escape') {
-      if (ui.elements.settingsModal.open) {
-        ui.closeSettingsModal();
+      if (ui.state.sidebarOpen) {
+        ui.closeSidebar();
       } else if (ui.elements.addModal.open) {
         ui.closeAddModal();
       } else if (ui.state.currentView === 'reader') {
@@ -313,24 +337,7 @@ function attachEventListeners() {
     }
   });
 
-  // Settings button
-  ui.elements.settingsBtn.addEventListener('click', () => {
-    ui.openSettingsModal();
-  });
-
-  // Close settings button
-  ui.elements.closeSettingsBtn.addEventListener('click', () => {
-    ui.closeSettingsModal();
-  });
-
-  // Close settings on backdrop click
-  ui.elements.settingsModal.addEventListener('click', (e) => {
-    if (e.target === ui.elements.settingsModal) {
-      ui.closeSettingsModal();
-    }
-  });
-
-  // Theme buttons
+  // Theme buttons (sidebar)
   ui.elements.themeButtons.forEach((btn) => {
     btn.addEventListener('click', () => {
       ui.setTheme(btn.dataset.theme);
@@ -338,7 +345,7 @@ function attachEventListeners() {
     });
   });
 
-  // Font family buttons
+  // Font family buttons (sidebar)
   ui.elements.fontButtons.forEach((btn) => {
     btn.addEventListener('click', () => {
       ui.setFontFamily(btn.dataset.font);
@@ -347,64 +354,20 @@ function attachEventListeners() {
   });
 
   // Font size slider
-  ui.elements.fontSizeSlider.addEventListener('input', (e) => {
+  ui.elements.fontSizeSlider?.addEventListener('input', (e) => {
     ui.setFontSize(parseInt(e.target.value, 10));
   });
 
-  ui.elements.fontSizeSlider.addEventListener('change', () => {
+  ui.elements.fontSizeSlider?.addEventListener('change', () => {
     saveSettings();
   });
 
   // Line height slider
-  ui.elements.lineHeightSlider.addEventListener('input', (e) => {
+  ui.elements.lineHeightSlider?.addEventListener('input', (e) => {
     ui.setLineHeight(parseInt(e.target.value, 10));
   });
 
-  ui.elements.lineHeightSlider.addEventListener('change', () => {
-    saveSettings();
-  });
-
-  // Settings footer button (reader view)
-  ui.elements.settingsFooterBtn?.addEventListener('click', () => {
-    ui.openSettingsSheet();
-  });
-
-  // Settings sheet backdrop click to close
-  ui.elements.settingsSheetBackdrop?.addEventListener('click', () => {
-    ui.closeSettingsSheet();
-  });
-
-  // Sheet theme buttons
-  ui.elements.sheetThemeButtons?.forEach((btn) => {
-    btn.addEventListener('click', () => {
-      ui.setTheme(btn.dataset.theme);
-      saveSettings();
-    });
-  });
-
-  // Sheet font buttons
-  ui.elements.sheetFontButtons?.forEach((btn) => {
-    btn.addEventListener('click', () => {
-      ui.setFontFamily(btn.dataset.font);
-      saveSettings();
-    });
-  });
-
-  // Sheet font size slider
-  ui.elements.sheetFontSizeSlider?.addEventListener('input', (e) => {
-    ui.setFontSize(parseInt(e.target.value, 10));
-  });
-
-  ui.elements.sheetFontSizeSlider?.addEventListener('change', () => {
-    saveSettings();
-  });
-
-  // Sheet line height slider
-  ui.elements.sheetLineHeightSlider?.addEventListener('input', (e) => {
-    ui.setLineHeight(parseInt(e.target.value, 10));
-  });
-
-  ui.elements.sheetLineHeightSlider?.addEventListener('change', () => {
+  ui.elements.lineHeightSlider?.addEventListener('change', () => {
     saveSettings();
   });
 }
@@ -501,8 +464,8 @@ function setupScrollProgress() {
 function setupGestures() {
   initGestures(ui.elements.readerContent, {
     onTap: () => {
-      // Only toggle UI if sheet is closed
-      if (!ui.state.settingsSheetOpen) {
+      // Only toggle UI if sidebar is closed
+      if (!ui.state.sidebarOpen) {
         ui.toggleUI();
       }
     },
@@ -510,21 +473,23 @@ function setupGestures() {
       ui.hideUI();
     },
     onSwipeDown: () => {
-      // If sheet is open, close it. Otherwise show UI.
-      if (ui.state.settingsSheetOpen) {
-        ui.closeSettingsSheet();
+      // If sidebar is open, close it. Otherwise show UI.
+      if (ui.state.sidebarOpen) {
+        ui.closeSidebar();
       } else {
         ui.showUI();
       }
     },
     onSwipeLeft: () => {
-      // Open settings sheet
-      ui.openSettingsSheet();
+      // Open sidebar
+      ui.openSidebar();
     },
     onSwipeRight: () => {
-      // Close settings sheet if open
-      if (ui.state.settingsSheetOpen) {
-        ui.closeSettingsSheet();
+      // Close sidebar if open, or go back to library
+      if (ui.state.sidebarOpen) {
+        ui.closeSidebar();
+      } else if (ui.state.currentView === 'reader') {
+        ui.showLibrary();
       }
     }
   });
