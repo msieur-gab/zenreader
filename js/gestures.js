@@ -19,6 +19,8 @@ let gestureTarget = null;
 // Callbacks
 let onSwipeUp = null;
 let onSwipeDown = null;
+let onSwipeLeft = null;
+let onSwipeRight = null;
 let onTap = null;
 
 /**
@@ -30,6 +32,8 @@ export function initGestures(element, callbacks = {}) {
   gestureTarget = element;
   onSwipeUp = callbacks.onSwipeUp || null;
   onSwipeDown = callbacks.onSwipeDown || null;
+  onSwipeLeft = callbacks.onSwipeLeft || null;
+  onSwipeRight = callbacks.onSwipeRight || null;
   onTap = callbacks.onTap || null;
 
   if (element) {
@@ -87,13 +91,23 @@ function handleTouchEnd(e) {
 
   // Determine gesture type
   if (absY > SWIPE_THRESHOLD && absY > absX) {
-    // Vertical swipe (and more vertical than horizontal)
+    // Vertical swipe (more vertical than horizontal)
     if (deltaY > 0) {
       // Swipe up -> hide UI
       if (onSwipeUp) onSwipeUp();
     } else {
       // Swipe down -> show UI
       if (onSwipeDown) onSwipeDown();
+    }
+    if (e.cancelable) e.preventDefault();
+  } else if (absX > SWIPE_THRESHOLD && absX > absY) {
+    // Horizontal swipe (more horizontal than vertical)
+    if (deltaX > 0) {
+      // Swipe left
+      if (onSwipeLeft) onSwipeLeft();
+    } else {
+      // Swipe right
+      if (onSwipeRight) onSwipeRight();
     }
     if (e.cancelable) e.preventDefault();
   } else if (absX < TAP_THRESHOLD && absY < TAP_THRESHOLD) {
@@ -197,6 +211,8 @@ function handleKeyDown(e) {
 export function updateCallbacks(callbacks) {
   if (callbacks.onSwipeUp !== undefined) onSwipeUp = callbacks.onSwipeUp;
   if (callbacks.onSwipeDown !== undefined) onSwipeDown = callbacks.onSwipeDown;
+  if (callbacks.onSwipeLeft !== undefined) onSwipeLeft = callbacks.onSwipeLeft;
+  if (callbacks.onSwipeRight !== undefined) onSwipeRight = callbacks.onSwipeRight;
   if (callbacks.onTap !== undefined) onTap = callbacks.onTap;
 }
 

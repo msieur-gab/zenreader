@@ -516,6 +516,16 @@ function setupGestures() {
       } else {
         ui.showUI();
       }
+    },
+    onSwipeLeft: () => {
+      // Open settings sheet
+      ui.openSettingsSheet();
+    },
+    onSwipeRight: () => {
+      // Close settings sheet if open
+      if (ui.state.settingsSheetOpen) {
+        ui.closeSettingsSheet();
+      }
     }
   });
 }
