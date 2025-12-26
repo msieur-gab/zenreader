@@ -10,7 +10,7 @@
 
   <link rel="manifest" href="/manifest.json">
   <link rel="icon" type="image/svg+xml" href="/icons/icon.svg">
-  <link rel="apple-touch-icon" href="/icons/icon.svg">
+  <link rel="apple-touch-icon" href="/icons/icon-192.png">
   <link rel="stylesheet" href="/css/styles.css">
 </head>
 <body data-view="library">
@@ -19,12 +19,20 @@
   <section id="library-view" class="view" aria-label="Article Library">
     <header class="header">
       <h1 class="header__title">ZenReader</h1>
-      <button id="add-btn" class="btn btn--icon" aria-label="Add article" title="Add article">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <line x1="12" y1="5" x2="12" y2="19"></line>
-          <line x1="5" y1="12" x2="19" y2="12"></line>
-        </svg>
-      </button>
+      <div class="header__actions">
+        <button id="settings-btn" class="btn btn--icon" aria-label="Settings" title="Settings">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="3"></circle>
+            <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"></path>
+          </svg>
+        </button>
+        <button id="add-btn" class="btn btn--icon" aria-label="Add article" title="Add article">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="12" y1="5" x2="12" y2="19"></line>
+            <line x1="5" y1="12" x2="19" y2="12"></line>
+          </svg>
+        </button>
+      </div>
     </header>
 
     <main id="library" class="library">
@@ -56,6 +64,13 @@
         <h1 id="reader-title" class="reader-header__title"></h1>
         <p id="reader-site" class="reader-header__site"></p>
       </div>
+      <button id="export-article-btn" class="btn btn--icon" aria-label="Export as Markdown" title="Export as Markdown">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+          <polyline points="7 10 12 15 17 10"></polyline>
+          <line x1="12" y1="15" x2="12" y2="3"></line>
+        </svg>
+      </button>
       <button id="delete-article-btn" class="btn btn--icon btn--danger" aria-label="Delete article" title="Delete article">
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <polyline points="3 6 5 6 21 6"></polyline>
@@ -112,6 +127,81 @@
         </button>
       </footer>
     </form>
+  </dialog>
+
+  <!-- Settings Modal -->
+  <dialog id="settings-modal" class="modal">
+    <div class="modal__content">
+      <header class="modal__header">
+        <h2 class="modal__title">Settings</h2>
+        <button type="button" id="close-settings-btn" class="btn btn--icon" aria-label="Close">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </button>
+      </header>
+
+      <div class="modal__body settings">
+        <!-- Theme -->
+        <div class="setting">
+          <label class="setting__label">Theme</label>
+          <div class="setting__options theme-options">
+            <button type="button" class="theme-btn theme-btn--light" data-theme="light" aria-label="Light theme">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="5"></circle>
+                <line x1="12" y1="1" x2="12" y2="3"></line>
+                <line x1="12" y1="21" x2="12" y2="23"></line>
+                <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                <line x1="1" y1="12" x2="3" y2="12"></line>
+                <line x1="21" y1="12" x2="23" y2="12"></line>
+                <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+              </svg>
+            </button>
+            <button type="button" class="theme-btn theme-btn--sepia" data-theme="sepia" aria-label="Sepia theme">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+                <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+              </svg>
+            </button>
+            <button type="button" class="theme-btn theme-btn--dark" data-theme="dark" aria-label="Dark theme">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <!-- Font Size -->
+        <div class="setting">
+          <label class="setting__label">
+            Font Size
+            <span id="font-size-value" class="setting__value">100%</span>
+          </label>
+          <input type="range" id="font-size-slider" class="slider" min="75" max="150" step="5" value="100">
+        </div>
+
+        <!-- Font Family -->
+        <div class="setting">
+          <label class="setting__label">Font Family</label>
+          <div class="setting__options">
+            <button type="button" class="font-btn" data-font="serif">Serif</button>
+            <button type="button" class="font-btn" data-font="sans">Sans</button>
+          </div>
+        </div>
+
+        <!-- Line Height -->
+        <div class="setting">
+          <label class="setting__label">
+            Line Spacing
+            <span id="line-height-value" class="setting__value">Normal</span>
+          </label>
+          <input type="range" id="line-height-slider" class="slider" min="140" max="220" step="10" value="180">
+        </div>
+      </div>
+    </div>
   </dialog>
 
   <!-- Offline Indicator -->

@@ -15,7 +15,9 @@ const STATIC_ASSETS = [
   '/js/ui.js',
   '/js/markdown.js',
   '/js/components/article-card.js',
-  '/icons/icon.svg'
+  '/icons/icon.svg',
+  '/icons/icon-192.png',
+  '/icons/icon-512.png'
 ];
 
 // External CDN resources to cache

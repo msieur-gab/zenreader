@@ -18,9 +18,11 @@ export const elements = {
 
   // Header
   addBtn: document.getElementById('add-btn'),
+  settingsBtn: document.getElementById('settings-btn'),
 
   // Reader
   backBtn: document.getElementById('back-btn'),
+  exportArticleBtn: document.getElementById('export-article-btn'),
   deleteArticleBtn: document.getElementById('delete-article-btn'),
   readerTitle: document.getElementById('reader-title'),
   readerSite: document.getElementById('reader-site'),
@@ -39,7 +41,17 @@ export const elements = {
   saveAddBtn: document.getElementById('save-add-btn'),
 
   // Offline indicator
-  offlineIndicator: document.getElementById('offline-indicator')
+  offlineIndicator: document.getElementById('offline-indicator'),
+
+  // Settings Modal
+  settingsModal: document.getElementById('settings-modal'),
+  closeSettingsBtn: document.getElementById('close-settings-btn'),
+  themeButtons: document.querySelectorAll('.theme-btn'),
+  fontButtons: document.querySelectorAll('.font-btn'),
+  fontSizeSlider: document.getElementById('font-size-slider'),
+  fontSizeValue: document.getElementById('font-size-value'),
+  lineHeightSlider: document.getElementById('line-height-slider'),
+  lineHeightValue: document.getElementById('line-height-value')
 };
 
 // ========================================
@@ -51,7 +63,13 @@ export const state = {
   currentArticleId: null,
   articles: [],
   isLoading: false,
-  isOnline: navigator.onLine
+  isOnline: navigator.onLine,
+  settings: {
+    theme: 'light',
+    fontSize: 100,
+    fontFamily: 'serif',
+    lineHeight: 180
+  }
 };
 
 // ========================================
@@ -216,4 +234,120 @@ export function showAddError(message) {
 export function setOnlineStatus(online) {
   state.isOnline = online;
   elements.offlineIndicator.hidden = online;
+}
+
+// ========================================
+// Settings Modal
+// ========================================
+
+/**
+ * Open the settings modal
+ */
+export function openSettingsModal() {
+  updateSettingsUI();
+  elements.settingsModal.showModal();
+}
+
+/**
+ * Close the settings modal
+ */
+export function closeSettingsModal() {
+  elements.settingsModal.close();
+}
+
+/**
+ * Update settings UI to reflect current state
+ */
+export function updateSettingsUI() {
+  // Theme buttons
+  elements.themeButtons.forEach((btn) => {
+    btn.classList.toggle('active', btn.dataset.theme === state.settings.theme);
+  });
+
+  // Font buttons
+  elements.fontButtons.forEach((btn) => {
+    btn.classList.toggle('active', btn.dataset.font === state.settings.fontFamily);
+  });
+
+  // Font size slider
+  elements.fontSizeSlider.value = state.settings.fontSize;
+  elements.fontSizeValue.textContent = `${state.settings.fontSize}%`;
+
+  // Line height slider
+  elements.lineHeightSlider.value = state.settings.lineHeight;
+  const lineHeightLabels = { 140: 'Compact', 160: 'Tight', 180: 'Normal', 200: 'Relaxed', 220: 'Loose' };
+  elements.lineHeightValue.textContent = lineHeightLabels[state.settings.lineHeight] || 'Normal';
+}
+
+/**
+ * Apply current settings to the document
+ */
+export function applySettings() {
+  const { theme, fontSize, fontFamily, lineHeight } = state.settings;
+
+  // Apply theme
+  document.documentElement.dataset.theme = theme === 'light' ? '' : theme;
+  if (theme === 'light') {
+    delete document.documentElement.dataset.theme;
+  }
+
+  // Apply reader styles
+  const readerFontSize = (fontSize / 100) * 1.125; // Base is 1.125rem
+  document.documentElement.style.setProperty('--reader-font-size', `${readerFontSize}rem`);
+  document.documentElement.style.setProperty('--reader-line-height', lineHeight / 100);
+  document.documentElement.style.setProperty(
+    '--font-serif',
+    fontFamily === 'sans' ? 'var(--font-sans)' : "Georgia, 'Times New Roman', serif"
+  );
+}
+
+/**
+ * Set theme
+ * @param {string} theme - Theme name (light, dark, sepia)
+ */
+export function setTheme(theme) {
+  state.settings.theme = theme;
+  applySettings();
+  updateSettingsUI();
+}
+
+/**
+ * Set font family
+ * @param {string} fontFamily - Font family (serif, sans)
+ */
+export function setFontFamily(fontFamily) {
+  state.settings.fontFamily = fontFamily;
+  applySettings();
+  updateSettingsUI();
+}
+
+/**
+ * Set font size
+ * @param {number} fontSize - Font size percentage (75-150)
+ */
+export function setFontSize(fontSize) {
+  state.settings.fontSize = fontSize;
+  applySettings();
+  updateSettingsUI();
+}
+
+/**
+ * Set line height
+ * @param {number} lineHeight - Line height percentage (140-220)
+ */
+export function setLineHeight(lineHeight) {
+  state.settings.lineHeight = lineHeight;
+  applySettings();
+  updateSettingsUI();
+}
+
+/**
+ * Load settings from storage
+ * @param {Object} savedSettings - Settings object from storage
+ */
+export function loadSettings(savedSettings) {
+  if (savedSettings) {
+    state.settings = { ...state.settings, ...savedSettings };
+  }
+  applySettings();
 }

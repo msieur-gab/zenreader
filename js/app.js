@@ -23,6 +23,9 @@ async function init() {
   // Request persistent storage
   await storage.requestPersistentStorage();
 
+  // Load settings
+  await loadSettings();
+
   // Check for share target params
   handleShareTarget();
 
@@ -147,6 +150,45 @@ async function openArticle(id) {
 }
 
 /**
+ * Export an article as markdown
+ * @param {number} id - Article ID
+ */
+async function exportArticle(id) {
+  try {
+    const article = await storage.getArticle(id);
+
+    // Create markdown content with frontmatter
+    const frontmatter = [
+      '---',
+      `title: "${article.title.replace(/"/g, '\\"')}"`,
+      article.author ? `author: "${article.author}"` : null,
+      article.siteName ? `source: "${article.siteName}"` : null,
+      `url: "${article.url}"`,
+      `saved: "${new Date(article.addedAt).toISOString()}"`,
+      '---',
+      ''
+    ].filter(Boolean).join('\n');
+
+    const markdown = frontmatter + article.content;
+
+    // Create blob and download
+    const blob = new Blob([markdown], { type: 'text/markdown' });
+    const url = URL.createObjectURL(blob);
+
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `${article.title.replace(/[^a-z0-9]/gi, '-').toLowerCase()}.md`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+
+    URL.revokeObjectURL(url);
+  } catch (error) {
+    console.error('Failed to export article:', error);
+  }
+}
+
+/**
  * Delete an article
  * @param {number} id - Article ID
  * @param {string} title - Article title for confirmation
@@ -215,6 +257,14 @@ function attachEventListeners() {
     ui.showLibrary();
   });
 
+  // Export article button (in reader)
+  ui.elements.exportArticleBtn.addEventListener('click', async () => {
+    const id = ui.state.currentArticleId;
+    if (id) {
+      await exportArticle(id);
+    }
+  });
+
   // Delete article button (in reader)
   ui.elements.deleteArticleBtn.addEventListener('click', async () => {
     const id = ui.state.currentArticleId;
@@ -237,13 +287,93 @@ function attachEventListeners() {
   document.addEventListener('keydown', (e) => {
     // Escape to go back or close modal
     if (e.key === 'Escape') {
-      if (ui.elements.addModal.open) {
+      if (ui.elements.settingsModal.open) {
+        ui.closeSettingsModal();
+      } else if (ui.elements.addModal.open) {
         ui.closeAddModal();
       } else if (ui.state.currentView === 'reader') {
         ui.showLibrary();
       }
     }
   });
+
+  // Settings button
+  ui.elements.settingsBtn.addEventListener('click', () => {
+    ui.openSettingsModal();
+  });
+
+  // Close settings button
+  ui.elements.closeSettingsBtn.addEventListener('click', () => {
+    ui.closeSettingsModal();
+  });
+
+  // Close settings on backdrop click
+  ui.elements.settingsModal.addEventListener('click', (e) => {
+    if (e.target === ui.elements.settingsModal) {
+      ui.closeSettingsModal();
+    }
+  });
+
+  // Theme buttons
+  ui.elements.themeButtons.forEach((btn) => {
+    btn.addEventListener('click', () => {
+      ui.setTheme(btn.dataset.theme);
+      saveSettings();
+    });
+  });
+
+  // Font family buttons
+  ui.elements.fontButtons.forEach((btn) => {
+    btn.addEventListener('click', () => {
+      ui.setFontFamily(btn.dataset.font);
+      saveSettings();
+    });
+  });
+
+  // Font size slider
+  ui.elements.fontSizeSlider.addEventListener('input', (e) => {
+    ui.setFontSize(parseInt(e.target.value, 10));
+  });
+
+  ui.elements.fontSizeSlider.addEventListener('change', () => {
+    saveSettings();
+  });
+
+  // Line height slider
+  ui.elements.lineHeightSlider.addEventListener('input', (e) => {
+    ui.setLineHeight(parseInt(e.target.value, 10));
+  });
+
+  ui.elements.lineHeightSlider.addEventListener('change', () => {
+    saveSettings();
+  });
+}
+
+// ========================================
+// Settings
+// ========================================
+
+/**
+ * Load settings from storage
+ */
+async function loadSettings() {
+  try {
+    const savedSettings = await storage.getSetting('readerSettings');
+    ui.loadSettings(savedSettings);
+  } catch (error) {
+    console.error('Failed to load settings:', error);
+  }
+}
+
+/**
+ * Save settings to storage
+ */
+async function saveSettings() {
+  try {
+    await storage.setSetting('readerSettings', ui.state.settings);
+  } catch (error) {
+    console.error('Failed to save settings:', error);
+  }
 }
 
 // ========================================
