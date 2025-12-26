@@ -1,0 +1,30 @@
+{
+  "name": "zenkeeper",
+  "version": "1.0.0",
+  "description": "ZenKeeper - Save and read articles in a clean, distraction-free environment",
+  "private": true,
+  "scripts": {
+    "dev": "netlify dev",
+    "build": "echo 'No build step required'",
+    "deploy": "netlify deploy --prod"
+  },
+  "dependencies": {
+    "@mozilla/readability": "^0.5.0",
+    "jsdom": "^24.0.0"
+  },
+  "devDependencies": {
+    "netlify-cli": "^17.0.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "keywords": [
+    "pwa",
+    "reader",
+    "read-it-later",
+    "articles",
+    "readability"
+  ],
+  "author": "",
+  "license": "MIT"
+}
