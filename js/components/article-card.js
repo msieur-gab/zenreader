@@ -8,6 +8,8 @@ template.innerHTML = `
   <style>
     :host {
       display: block;
+      min-width: 0;
+      overflow: hidden;
     }
 
     .card {
@@ -21,6 +23,7 @@ template.innerHTML = `
       border-radius: var(--radius-lg, 0.75rem);
       cursor: pointer;
       transition: transform 0.2s ease, box-shadow 0.2s ease;
+      overflow: hidden;
     }
 
     @media (min-width: 640px) {
@@ -129,6 +132,8 @@ template.innerHTML = `
       border-top: 1px solid var(--bg-tertiary, #e2e8f0);
       font-size: 0.625rem;
       color: var(--text-muted, #94a3b8);
+      overflow: hidden;
+      min-width: 0;
     }
 
     @media (min-width: 640px) {
@@ -143,6 +148,12 @@ template.innerHTML = `
       display: flex;
       align-items: center;
       gap: 0.25rem;
+      overflow: hidden;
+      min-width: 0;
+      flex: 1;
+    }
+
+    .card__site-name {
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
