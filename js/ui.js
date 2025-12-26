@@ -7,66 +7,76 @@
 // DOM Element References
 // ========================================
 
-export const elements = {
+// Elements container - initialized after DOM ready
+export const elements = {};
+
+/**
+ * Initialize DOM element references
+ * Must be called after DOM is ready
+ */
+export function initElements() {
   // Views
-  libraryView: document.getElementById('library-view'),
-  readerView: document.getElementById('reader-view'),
+  elements.libraryView = document.getElementById('library-view');
+  elements.readerView = document.getElementById('reader-view');
 
   // Library
-  articleGrid: document.getElementById('article-grid'),
-  emptyState: document.getElementById('empty-state'),
+  elements.articleGrid = document.getElementById('article-grid');
+  elements.emptyState = document.getElementById('empty-state');
 
   // Header
-  addBtn: document.getElementById('add-btn'),
-  settingsBtn: document.getElementById('settings-btn'),
+  elements.addBtn = document.getElementById('add-btn');
+  elements.settingsBtn = document.getElementById('settings-btn');
 
   // Reader
-  backBtn: document.getElementById('back-btn'),
-  exportArticleBtn: document.getElementById('export-article-btn'),
-  deleteArticleBtn: document.getElementById('delete-article-btn'),
-  readerTitle: document.getElementById('reader-title'),
-  readerSite: document.getElementById('reader-site'),
-  readerContent: document.getElementById('reader-content'),
-  readerProgress: document.getElementById('reader-progress'),
-  progressFill: document.querySelector('.progress-bar__fill'),
-  readerHeader: document.querySelector('.reader-header'),
+  elements.backBtn = document.getElementById('back-btn');
+  elements.exportArticleBtn = document.getElementById('export-article-btn');
+  elements.deleteArticleBtn = document.getElementById('delete-article-btn');
+  elements.readerTitle = document.getElementById('reader-title');
+  elements.readerSite = document.getElementById('reader-site');
+  elements.readerContent = document.getElementById('reader-content');
+  elements.readerProgress = document.getElementById('reader-progress');
+  elements.progressFill = document.querySelector('.progress-bar__fill');
+  elements.readerHeader = document.querySelector('.reader-header');
+  elements.readerFooter = document.getElementById('reader-footer');
+  elements.settingsFooterBtn = document.getElementById('settings-footer-btn');
 
   // Settings Sheet (reader)
-  settingsSheet: document.getElementById('settings-sheet'),
-  settingsSheetBackdrop: document.getElementById('settings-sheet-backdrop'),
-  settingsFab: document.getElementById('settings-fab'),
+  elements.settingsSheet = document.getElementById('settings-sheet');
+  elements.settingsSheetBackdrop = document.getElementById('settings-sheet-backdrop');
 
-  // Sheet controls (duplicated from modal)
-  sheetThemeButtons: document.querySelectorAll('#settings-sheet .theme-btn'),
-  sheetFontButtons: document.querySelectorAll('#settings-sheet .font-btn'),
-  sheetFontSizeSlider: document.getElementById('sheet-font-size-slider'),
-  sheetFontSizeValue: document.getElementById('sheet-font-size-value'),
-  sheetLineHeightSlider: document.getElementById('sheet-line-height-slider'),
-  sheetLineHeightValue: document.getElementById('sheet-line-height-value'),
+  // Sheet controls
+  elements.sheetThemeButtons = document.querySelectorAll('#settings-sheet .theme-btn');
+  elements.sheetFontButtons = document.querySelectorAll('#settings-sheet .font-btn');
+  elements.sheetFontSizeSlider = document.getElementById('sheet-font-size-slider');
+  elements.sheetFontSizeValue = document.getElementById('sheet-font-size-value');
+  elements.sheetLineHeightSlider = document.getElementById('sheet-line-height-slider');
+  elements.sheetLineHeightValue = document.getElementById('sheet-line-height-value');
 
-  // Modal
-  addModal: document.getElementById('add-modal'),
-  addForm: document.getElementById('add-form'),
-  urlInput: document.getElementById('url-input'),
-  detectedTitle: document.getElementById('detected-title'),
-  addError: document.getElementById('add-error'),
-  closeModalBtn: document.getElementById('close-modal-btn'),
-  cancelAddBtn: document.getElementById('cancel-add-btn'),
-  saveAddBtn: document.getElementById('save-add-btn'),
+  // Add Modal
+  elements.addModal = document.getElementById('add-modal');
+  elements.addForm = document.getElementById('add-form');
+  elements.urlInput = document.getElementById('url-input');
+  elements.detectedTitle = document.getElementById('detected-title');
+  elements.addError = document.getElementById('add-error');
+  elements.addProgress = document.getElementById('add-progress');
+  elements.addProgressFill = document.querySelector('.add-progress__fill');
+  elements.closeModalBtn = document.getElementById('close-modal-btn');
+  elements.cancelAddBtn = document.getElementById('cancel-add-btn');
+  elements.saveAddBtn = document.getElementById('save-add-btn');
 
   // Offline indicator
-  offlineIndicator: document.getElementById('offline-indicator'),
+  elements.offlineIndicator = document.getElementById('offline-indicator');
 
   // Settings Modal
-  settingsModal: document.getElementById('settings-modal'),
-  closeSettingsBtn: document.getElementById('close-settings-btn'),
-  themeButtons: document.querySelectorAll('.theme-btn'),
-  fontButtons: document.querySelectorAll('.font-btn'),
-  fontSizeSlider: document.getElementById('font-size-slider'),
-  fontSizeValue: document.getElementById('font-size-value'),
-  lineHeightSlider: document.getElementById('line-height-slider'),
-  lineHeightValue: document.getElementById('line-height-value')
-};
+  elements.settingsModal = document.getElementById('settings-modal');
+  elements.closeSettingsBtn = document.getElementById('close-settings-btn');
+  elements.themeButtons = document.querySelectorAll('#settings-modal .theme-btn');
+  elements.fontButtons = document.querySelectorAll('#settings-modal .font-btn');
+  elements.fontSizeSlider = document.getElementById('font-size-slider');
+  elements.fontSizeValue = document.getElementById('font-size-value');
+  elements.lineHeightSlider = document.getElementById('line-height-slider');
+  elements.lineHeightValue = document.getElementById('line-height-value');
+}
 
 // ========================================
 // State
@@ -105,7 +115,6 @@ export function showLibrary() {
   elements.readerHeader?.classList.remove('reader-header--hidden');
   elements.settingsSheet?.classList.remove('settings-sheet--open');
   elements.settingsSheetBackdrop?.classList.remove('sheet-backdrop--visible');
-  elements.settingsFab?.classList.remove('fab--hidden');
 
   document.body.dataset.view = 'library';
   elements.libraryView.hidden = false;
@@ -159,6 +168,7 @@ export function renderLibrary(articles) {
     card.setAttribute('read-time', article.estimatedReadTime || '?');
     card.setAttribute('is-read', article.isRead ? 'true' : 'false');
     card.setAttribute('excerpt', article.excerpt || '');
+    card.setAttribute('saved-at', article.addedAt || '');
     elements.articleGrid.appendChild(card);
   });
 }
@@ -225,17 +235,44 @@ export function closeAddModal() {
 /**
  * Set loading state for add modal
  * @param {boolean} loading - Whether loading
+ * @param {number} progress - Optional progress percentage (0-100)
  */
-export function setAddLoading(loading) {
+export function setAddLoading(loading, progress = 0) {
   state.isLoading = loading;
   elements.saveAddBtn.disabled = loading;
   elements.urlInput.disabled = loading;
+  elements.cancelAddBtn.disabled = loading;
 
+  // Show/hide progress bar
+  if (elements.addProgress) {
+    elements.addProgress.hidden = !loading;
+  }
+
+  // Update progress
+  if (elements.addProgressFill) {
+    elements.addProgressFill.style.width = `${progress}%`;
+  }
+
+  // Update button text
   const btnText = elements.saveAddBtn.querySelector('.btn__text');
-  const btnLoading = elements.saveAddBtn.querySelector('.btn__loading');
+  if (btnText) {
+    btnText.textContent = loading ? 'Saving...' : 'Save';
+  }
+}
 
-  btnText.hidden = loading;
-  btnLoading.hidden = !loading;
+/**
+ * Update add progress
+ * @param {number} progress - Progress percentage (0-100)
+ * @param {string} status - Optional status text
+ */
+export function updateAddProgress(progress, status = '') {
+  if (elements.addProgressFill) {
+    elements.addProgressFill.style.width = `${progress}%`;
+  }
+  if (status && elements.detectedTitle) {
+    elements.detectedTitle.textContent = status;
+    elements.detectedTitle.hidden = false;
+  }
 }
 
 /**
@@ -426,7 +463,6 @@ export function openSettingsSheet() {
   updateSheetUI();
   elements.settingsSheet?.classList.add('settings-sheet--open');
   elements.settingsSheetBackdrop?.classList.add('sheet-backdrop--visible');
-  elements.settingsFab?.classList.add('fab--hidden');
 }
 
 /**
@@ -436,7 +472,6 @@ export function closeSettingsSheet() {
   state.settingsSheetOpen = false;
   elements.settingsSheet?.classList.remove('settings-sheet--open');
   elements.settingsSheetBackdrop?.classList.remove('sheet-backdrop--visible');
-  elements.settingsFab?.classList.remove('fab--hidden');
 }
 
 /**

@@ -738,44 +738,63 @@ a:hover {
 }
 
 /* ========================================
-   Floating Action Button (FAB)
+   Reader Footer
    ======================================== */
 
-.fab {
-  position: fixed;
-  bottom: var(--space-xl);
-  right: var(--space-lg);
-  z-index: 50;
-  display: flex;
+.reader-footer {
+  max-width: var(--reader-max-width);
+  margin: 0 auto;
+  padding: var(--space-xl) var(--space-lg);
+  text-align: center;
+  border-top: 1px solid var(--bg-tertiary);
+}
+
+.reader-footer__btn {
+  display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 56px;
-  height: 56px;
-  border-radius: 50%;
-  background: var(--color-accent);
-  color: white;
-  box-shadow: var(--shadow-lg);
-  transition: transform 0.2s, opacity 0.2s, background-color 0.15s;
+  gap: var(--space-sm);
+  padding: var(--space-sm) var(--space-lg);
+  background: var(--bg-secondary);
+  color: var(--text-secondary);
+  border-radius: var(--radius-full);
+  font-size: 0.875rem;
+  font-weight: 500;
+  transition: background-color 0.15s, color 0.15s;
 }
 
-.fab:hover {
-  background: var(--color-accent-hover);
-  transform: scale(1.05);
+.reader-footer__btn:hover {
+  background: var(--bg-tertiary);
+  color: var(--text-primary);
 }
 
-.fab:active {
-  transform: scale(0.95);
-}
-
-.fab--hidden {
-  opacity: 0;
-  pointer-events: none;
-  transform: scale(0.8);
-}
-
-/* Only show FAB in reader view */
-[data-view="library"] .fab {
+/* Only show footer in reader view */
+[data-view="library"] .reader-footer {
   display: none;
+}
+
+/* ========================================
+   Add Progress Bar
+   ======================================== */
+
+.add-progress {
+  margin-top: var(--space-md);
+  height: 4px;
+  background: var(--bg-tertiary);
+  border-radius: var(--radius-full);
+  overflow: hidden;
+}
+
+.add-progress[hidden] {
+  display: none;
+}
+
+.add-progress__fill {
+  height: 100%;
+  width: 0%;
+  background: var(--color-accent);
+  border-radius: var(--radius-full);
+  transition: width 0.3s ease;
 }
 
 /* ========================================

@@ -155,9 +155,24 @@ template.innerHTML = `
       flex-shrink: 0;
     }
 
+    .card__date {
+      display: flex;
+      align-items: center;
+      gap: 0.25rem;
+      margin-left: auto;
+      flex-shrink: 0;
+    }
+
     .card__icon {
       width: 0.875rem;
       height: 0.875rem;
+    }
+
+    @media (max-width: 640px) {
+      .card__icon {
+        width: 0.75rem;
+        height: 0.75rem;
+      }
     }
   </style>
 
@@ -188,13 +203,16 @@ template.innerHTML = `
         </svg>
         <span class="card__time-value"></span>
       </span>
+      <span class="card__date">
+        <span class="card__date-value"></span>
+      </span>
     </footer>
   </article>
 `;
 
 class ArticleCard extends HTMLElement {
   static get observedAttributes() {
-    return ['article-id', 'title', 'site', 'read-time', 'is-read', 'excerpt'];
+    return ['article-id', 'title', 'site', 'read-time', 'is-read', 'excerpt', 'saved-at'];
   }
 
   constructor() {
@@ -208,6 +226,7 @@ class ArticleCard extends HTMLElement {
     this._excerpt = this.shadowRoot.querySelector('.card__excerpt');
     this._siteName = this.shadowRoot.querySelector('.card__site-name');
     this._timeValue = this.shadowRoot.querySelector('.card__time-value');
+    this._dateValue = this.shadowRoot.querySelector('.card__date-value');
     this._deleteBtn = this.shadowRoot.querySelector('.card__delete');
   }
 
@@ -232,12 +251,34 @@ class ArticleCard extends HTMLElement {
     const readTime = this.getAttribute('read-time') || '?';
     const isRead = this.getAttribute('is-read') === 'true';
     const excerpt = this.getAttribute('excerpt') || '';
+    const savedAt = this.getAttribute('saved-at');
 
     this._title.textContent = title;
     this._excerpt.textContent = excerpt;
     this._siteName.textContent = site;
     this._timeValue.textContent = `${readTime} min`;
+    this._dateValue.textContent = savedAt ? this._formatDate(savedAt) : '';
     this._card.classList.toggle('card--read', isRead);
+  }
+
+  _formatDate(dateStr) {
+    const date = new Date(dateStr);
+    const now = new Date();
+    const diffMs = now - date;
+    const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+
+    if (diffDays === 0) {
+      return 'Today';
+    } else if (diffDays === 1) {
+      return 'Yesterday';
+    } else if (diffDays < 7) {
+      return `${diffDays}d ago`;
+    } else if (diffDays < 30) {
+      const weeks = Math.floor(diffDays / 7);
+      return `${weeks}w ago`;
+    } else {
+      return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+    }
   }
 
   _attachEventListeners() {

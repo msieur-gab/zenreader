@@ -95,7 +95,7 @@ function handleTouchEnd(e) {
       // Swipe down -> show UI
       if (onSwipeDown) onSwipeDown();
     }
-    e.preventDefault();
+    if (e.cancelable) e.preventDefault();
   } else if (absX < TAP_THRESHOLD && absY < TAP_THRESHOLD) {
     // It's a tap -> toggle UI
     // But only if not clicking on interactive elements

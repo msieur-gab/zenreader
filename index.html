@@ -83,17 +83,20 @@
       <!-- Rendered markdown here -->
     </article>
 
+    <!-- Reader Footer with Settings Button -->
+    <footer id="reader-footer" class="reader-footer">
+      <button id="settings-footer-btn" class="reader-footer__btn" aria-label="Reading settings">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="3"></circle>
+          <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"></path>
+        </svg>
+        <span>Reading Settings</span>
+      </button>
+    </footer>
+
     <div id="reader-progress" class="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
       <div class="progress-bar__fill"></div>
     </div>
-
-    <!-- Settings FAB (Floating Action Button) -->
-    <button id="settings-fab" class="fab" aria-label="Reading settings" title="Reading settings">
-      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-        <circle cx="12" cy="12" r="3"></circle>
-        <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"></path>
-      </svg>
-    </button>
 
     <!-- Settings Sheet Backdrop -->
     <div id="settings-sheet-backdrop" class="sheet-backdrop"></div>
@@ -187,6 +190,9 @@
           autocomplete="off"
         >
         <p id="detected-title" class="detected-title" hidden></p>
+        <div id="add-progress" class="add-progress" hidden>
+          <div class="add-progress__fill"></div>
+        </div>
         <p id="add-error" class="error" hidden></p>
       </div>
 
@@ -194,11 +200,6 @@
         <button type="button" id="cancel-add-btn" class="btn btn--secondary">Cancel</button>
         <button type="submit" id="save-add-btn" class="btn btn--primary">
           <span class="btn__text">Save</span>
-          <span class="btn__loading" hidden>
-            <svg class="spinner" width="20" height="20" viewBox="0 0 24 24">
-              <circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" stroke-width="3" stroke-dasharray="31.4 31.4" stroke-linecap="round"/>
-            </svg>
-          </span>
         </button>
       </footer>
     </form>

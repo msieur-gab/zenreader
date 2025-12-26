@@ -6,6 +6,7 @@
 import * as storage from './storage.js';
 import * as api from './api.js';
 import * as ui from './ui.js';
+import { initElements } from './ui.js';
 import { renderMarkdown } from './markdown.js';
 import { initGestures, destroyGestures } from './gestures.js';
 import './components/article-card.js';
@@ -18,6 +19,9 @@ import './components/article-card.js';
  * Initialize the application
  */
 async function init() {
+  // Initialize DOM element references
+  initElements();
+
   // Register service worker
   await registerServiceWorker();
 
@@ -109,13 +113,16 @@ async function loadLibrary() {
  * @param {string} url - URL to extract and save
  */
 async function addArticle(url) {
-  ui.setAddLoading(true);
+  ui.setAddLoading(true, 10);
+  ui.updateAddProgress(10, 'Fetching article...');
 
   try {
     // Extract article content
+    ui.updateAddProgress(30, 'Extracting content...');
     const article = await api.extractArticle(url);
 
     // Save to storage
+    ui.updateAddProgress(70, 'Saving article...');
     await storage.addArticle(
       {
         title: article.title,
@@ -127,11 +134,16 @@ async function addArticle(url) {
       article.markdown
     );
 
+    // Complete
+    ui.updateAddProgress(100, 'Done!');
+
     // Refresh library
     await loadLibrary();
 
-    // Close modal
-    ui.closeAddModal();
+    // Close modal after brief delay to show completion
+    setTimeout(() => {
+      ui.closeAddModal();
+    }, 300);
   } catch (error) {
     console.error('Failed to add article:', error);
     ui.showAddError(error.message || 'Failed to extract article');
@@ -352,8 +364,8 @@ function attachEventListeners() {
     saveSettings();
   });
 
-  // Settings FAB (reader view)
-  ui.elements.settingsFab?.addEventListener('click', () => {
+  // Settings footer button (reader view)
+  ui.elements.settingsFooterBtn?.addEventListener('click', () => {
     ui.openSettingsSheet();
   });
 
