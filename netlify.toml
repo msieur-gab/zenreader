@@ -5,13 +5,26 @@
 [functions]
   node_bundler = "esbuild"
 
+# Force Node.js 18 for fetch API support
+[context.production]
+  environment = { NODE_VERSION = "18" }
+
+[context.deploy-preview]
+  environment = { NODE_VERSION = "18" }
+
 # Redirect /share to index.html for PWA share target
 [[redirects]]
   from = "/share"
   to = "/index.html"
   status = 200
 
-# SPA fallback - redirect all routes to index.html
+# IMPORTANT: Let Netlify functions pass through (must be before SPA fallback)
+[[redirects]]
+  from = "/.netlify/functions/*"
+  to = "/.netlify/functions/:splat"
+  status = 200
+
+# SPA fallback - redirect all OTHER routes to index.html
 [[redirects]]
   from = "/*"
   to = "/index.html"

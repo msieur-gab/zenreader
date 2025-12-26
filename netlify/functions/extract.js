@@ -5,6 +5,7 @@
 
 const { JSDOM } = require('jsdom');
 const { Readability } = require('@mozilla/readability');
+const fetch = require('node-fetch');
 
 exports.handler = async (event) => {
   // CORS headers
