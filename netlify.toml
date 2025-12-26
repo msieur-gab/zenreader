@@ -3,7 +3,9 @@
   publish = "."
 
 [functions]
+  # Mark jsdom as external - it doesn't bundle well with esbuild
   node_bundler = "esbuild"
+  external_node_modules = ["jsdom"]
 
 # Force Node.js 18 for fetch API support
 [context.production]
@@ -18,13 +20,8 @@
   to = "/index.html"
   status = 200
 
-# IMPORTANT: Let Netlify functions pass through (must be before SPA fallback)
-[[redirects]]
-  from = "/.netlify/functions/*"
-  to = "/.netlify/functions/:splat"
-  status = 200
-
-# SPA fallback - redirect all OTHER routes to index.html
+# SPA fallback for client-side routing
+# Note: Netlify automatically handles /.netlify/* paths before redirects
 [[redirects]]
   from = "/*"
   to = "/index.html"
