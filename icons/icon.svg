@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512">
+  <rect width="512" height="512" rx="96" fill="#1a1a2e"/>
+  <g transform="translate(96, 96)" fill="none" stroke="#ffffff" stroke-width="20" stroke-linecap="round" stroke-linejoin="round">
+    <!-- Book icon -->
+    <path d="M40 280V40a20 20 0 0 1 20-20h200a20 20 0 0 1 20 20v240"/>
+    <path d="M40 280c0-20 20-40 60-40h180"/>
+    <path d="M40 40c0 20 20 40 60 40h180"/>
+    <!-- Reading lines -->
+    <line x1="100" y1="100" x2="220" y2="100"/>
+    <line x1="100" y1="140" x2="200" y2="140"/>
+    <line x1="100" y1="180" x2="180" y2="180"/>
+  </g>
+</svg>

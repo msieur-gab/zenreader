@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#1a1a2e">
+  <meta name="description" content="ZenReader - Save and read articles in a clean, distraction-free environment">
+
+  <title>ZenReader</title>
+
+  <link rel="manifest" href="/manifest.json">
+  <link rel="icon" type="image/svg+xml" href="/icons/icon.svg">
+  <link rel="apple-touch-icon" href="/icons/icon.svg">
+  <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body data-view="library">
+
+  <!-- Library View -->
+  <section id="library-view" class="view" aria-label="Article Library">
+    <header class="header">
+      <h1 class="header__title">ZenReader</h1>
+      <button id="add-btn" class="btn btn--icon" aria-label="Add article" title="Add article">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="12" y1="5" x2="12" y2="19"></line>
+          <line x1="5" y1="12" x2="19" y2="12"></line>
+        </svg>
+      </button>
+    </header>
+
+    <main id="library" class="library">
+      <div id="article-grid" class="grid">
+        <!-- <article-card> elements populated here -->
+      </div>
+
+      <div id="empty-state" class="empty" hidden>
+        <svg class="empty__icon" width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+          <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+          <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+        </svg>
+        <h2 class="empty__title">No articles yet</h2>
+        <p class="empty__text">Share a URL from any app or tap + to add</p>
+      </div>
+    </main>
+  </section>
+
+  <!-- Reader View -->
+  <section id="reader-view" class="view" hidden aria-label="Article Reader">
+    <header class="reader-header">
+      <button id="back-btn" class="btn btn--icon" aria-label="Back to library">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="19" y1="12" x2="5" y2="12"></line>
+          <polyline points="12 19 5 12 12 5"></polyline>
+        </svg>
+      </button>
+      <div class="reader-header__meta">
+        <h1 id="reader-title" class="reader-header__title"></h1>
+        <p id="reader-site" class="reader-header__site"></p>
+      </div>
+      <button id="delete-article-btn" class="btn btn--icon btn--danger" aria-label="Delete article" title="Delete article">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <polyline points="3 6 5 6 21 6"></polyline>
+          <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+        </svg>
+      </button>
+    </header>
+
+    <article id="reader-content" class="reader-content">
+      <!-- Rendered markdown here -->
+    </article>
+
+    <div id="reader-progress" class="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
+      <div class="progress-bar__fill"></div>
+    </div>
+  </section>
+
+  <!-- Add Modal -->
+  <dialog id="add-modal" class="modal">
+    <form id="add-form" class="modal__content">
+      <header class="modal__header">
+        <h2 class="modal__title">Add Article</h2>
+        <button type="button" id="close-modal-btn" class="btn btn--icon" aria-label="Close">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </button>
+      </header>
+
+      <div class="modal__body">
+        <label for="url-input" class="label">URL</label>
+        <input
+          type="url"
+          id="url-input"
+          class="input"
+          placeholder="https://example.com/article"
+          required
+          autocomplete="off"
+        >
+        <p id="detected-title" class="detected-title" hidden></p>
+        <p id="add-error" class="error" hidden></p>
+      </div>
+
+      <footer class="modal__footer">
+        <button type="button" id="cancel-add-btn" class="btn btn--secondary">Cancel</button>
+        <button type="submit" id="save-add-btn" class="btn btn--primary">
+          <span class="btn__text">Save</span>
+          <span class="btn__loading" hidden>
+            <svg class="spinner" width="20" height="20" viewBox="0 0 24 24">
+              <circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" stroke-width="3" stroke-dasharray="31.4 31.4" stroke-linecap="round"/>
+            </svg>
+          </span>
+        </button>
+      </footer>
+    </form>
+  </dialog>
+
+  <!-- Offline Indicator -->
+  <div id="offline-indicator" class="offline" hidden aria-live="polite">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <line x1="1" y1="1" x2="23" y2="23"></line>
+      <path d="M16.72 11.06A10.94 10.94 0 0 1 19 12.55"></path>
+      <path d="M5 12.55a10.94 10.94 0 0 1 5.17-2.39"></path>
+      <path d="M10.71 5.05A16 16 0 0 1 22.58 9"></path>
+      <path d="M1.42 9a15.91 15.91 0 0 1 4.7-2.88"></path>
+      <path d="M8.53 16.11a6 6 0 0 1 6.95 0"></path>
+      <line x1="12" y1="20" x2="12.01" y2="20"></line>
+    </svg>
+    <span>Offline</span>
+  </div>
+
+  <!-- External Libraries -->
+  <script src="https://cdn.jsdelivr.net/npm/dexie@3.2.4/dist/dexie.min.js"></script>
+  <script src="https://unpkg.com/turndown@7.1.2/dist/turndown.js"></script>
+
+  <!-- App -->
+  <script type="module" src="/js/app.js"></script>
+</body>
+</html>
