@@ -320,6 +320,16 @@ a:hover {
   color: var(--text-muted);
 }
 
+/* Immersive Mode - Hidden Header */
+.reader-header--hidden {
+  transform: translateY(-100%);
+  pointer-events: none;
+}
+
+.reader-header {
+  transition: transform 0.3s ease;
+}
+
 /* ========================================
    Reader Content
    ======================================== */
@@ -723,4 +733,111 @@ a:hover {
     padding: var(--space-lg) var(--space-md);
     font-size: 1rem;
   }
+}
+
+/* ========================================
+   Floating Action Button (FAB)
+   ======================================== */
+
+.fab {
+  position: fixed;
+  bottom: var(--space-xl);
+  right: var(--space-lg);
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: var(--color-accent);
+  color: white;
+  box-shadow: var(--shadow-lg);
+  transition: transform 0.2s, opacity 0.2s, background-color 0.15s;
+}
+
+.fab:hover {
+  background: var(--color-accent-hover);
+  transform: scale(1.05);
+}
+
+.fab:active {
+  transform: scale(0.95);
+}
+
+.fab--hidden {
+  opacity: 0;
+  pointer-events: none;
+  transform: scale(0.8);
+}
+
+/* Only show FAB in reader view */
+[data-view="library"] .fab {
+  display: none;
+}
+
+/* ========================================
+   Bottom Sheet
+   ======================================== */
+
+.sheet-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  background: rgba(0, 0, 0, 0.4);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+
+.sheet-backdrop--visible {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.settings-sheet {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 70;
+  max-height: 50vh;
+  background: var(--bg-primary);
+  border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+  box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.15);
+  transform: translateY(100%);
+  transition: transform 0.3s ease;
+}
+
+.settings-sheet--open {
+  transform: translateY(0);
+}
+
+.settings-sheet__handle {
+  width: 40px;
+  height: 4px;
+  margin: var(--space-sm) auto var(--space-md);
+  background: var(--bg-tertiary);
+  border-radius: var(--radius-full);
+}
+
+.settings-sheet__content {
+  padding: 0 var(--space-lg) var(--space-xl);
+  max-height: calc(50vh - 2rem);
+  overflow-y: auto;
+}
+
+/* Only show sheet elements in reader view */
+[data-view="library"] .settings-sheet,
+[data-view="library"] .sheet-backdrop {
+  display: none;
+}
+
+/* Dark theme adjustments */
+[data-theme="dark"] .sheet-backdrop {
+  background: rgba(0, 0, 0, 0.6);
+}
+
+[data-theme="dark"] .settings-sheet {
+  box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.4);
 }

@@ -86,6 +86,81 @@
     <div id="reader-progress" class="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
       <div class="progress-bar__fill"></div>
     </div>
+
+    <!-- Settings FAB (Floating Action Button) -->
+    <button id="settings-fab" class="fab" aria-label="Reading settings" title="Reading settings">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <circle cx="12" cy="12" r="3"></circle>
+        <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"></path>
+      </svg>
+    </button>
+
+    <!-- Settings Sheet Backdrop -->
+    <div id="settings-sheet-backdrop" class="sheet-backdrop"></div>
+
+    <!-- Settings Bottom Sheet -->
+    <div id="settings-sheet" class="settings-sheet" role="dialog" aria-label="Reading settings">
+      <div class="settings-sheet__handle"></div>
+      <div class="settings-sheet__content settings">
+        <!-- Theme -->
+        <div class="setting">
+          <label class="setting__label">Theme</label>
+          <div class="setting__options theme-options">
+            <button type="button" class="theme-btn theme-btn--light" data-theme="light" aria-label="Light theme">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="5"></circle>
+                <line x1="12" y1="1" x2="12" y2="3"></line>
+                <line x1="12" y1="21" x2="12" y2="23"></line>
+                <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                <line x1="1" y1="12" x2="3" y2="12"></line>
+                <line x1="21" y1="12" x2="23" y2="12"></line>
+                <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+              </svg>
+            </button>
+            <button type="button" class="theme-btn theme-btn--sepia" data-theme="sepia" aria-label="Sepia theme">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+                <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+              </svg>
+            </button>
+            <button type="button" class="theme-btn theme-btn--dark" data-theme="dark" aria-label="Dark theme">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <!-- Font Size -->
+        <div class="setting">
+          <label class="setting__label">
+            Font Size
+            <span id="sheet-font-size-value" class="setting__value">100%</span>
+          </label>
+          <input type="range" id="sheet-font-size-slider" class="slider" min="75" max="150" step="5" value="100">
+        </div>
+
+        <!-- Font Family -->
+        <div class="setting">
+          <label class="setting__label">Font Family</label>
+          <div class="setting__options">
+            <button type="button" class="font-btn" data-font="serif">Serif</button>
+            <button type="button" class="font-btn" data-font="sans">Sans</button>
+          </div>
+        </div>
+
+        <!-- Line Height -->
+        <div class="setting">
+          <label class="setting__label">
+            Line Spacing
+            <span id="sheet-line-height-value" class="setting__value">Normal</span>
+          </label>
+          <input type="range" id="sheet-line-height-slider" class="slider" min="140" max="220" step="10" value="180">
+        </div>
+      </div>
+    </div>
   </section>
 
   <!-- Add Modal -->

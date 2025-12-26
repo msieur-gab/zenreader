@@ -3,7 +3,7 @@
  * Handles offline caching and share target requests
  */
 
-const CACHE_NAME = 'zenreader-v1';
+const CACHE_NAME = 'zenreader-v2';
 const STATIC_ASSETS = [
   '/',
   '/index.html',
@@ -14,6 +14,7 @@ const STATIC_ASSETS = [
   '/js/api.js',
   '/js/ui.js',
   '/js/markdown.js',
+  '/js/gestures.js',
   '/js/components/article-card.js',
   '/icons/icon.svg',
   '/icons/icon-192.png',

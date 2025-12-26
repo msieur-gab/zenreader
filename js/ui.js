@@ -29,6 +29,20 @@ export const elements = {
   readerContent: document.getElementById('reader-content'),
   readerProgress: document.getElementById('reader-progress'),
   progressFill: document.querySelector('.progress-bar__fill'),
+  readerHeader: document.querySelector('.reader-header'),
+
+  // Settings Sheet (reader)
+  settingsSheet: document.getElementById('settings-sheet'),
+  settingsSheetBackdrop: document.getElementById('settings-sheet-backdrop'),
+  settingsFab: document.getElementById('settings-fab'),
+
+  // Sheet controls (duplicated from modal)
+  sheetThemeButtons: document.querySelectorAll('#settings-sheet .theme-btn'),
+  sheetFontButtons: document.querySelectorAll('#settings-sheet .font-btn'),
+  sheetFontSizeSlider: document.getElementById('sheet-font-size-slider'),
+  sheetFontSizeValue: document.getElementById('sheet-font-size-value'),
+  sheetLineHeightSlider: document.getElementById('sheet-line-height-slider'),
+  sheetLineHeightValue: document.getElementById('sheet-line-height-value'),
 
   // Modal
   addModal: document.getElementById('add-modal'),
@@ -64,6 +78,8 @@ export const state = {
   articles: [],
   isLoading: false,
   isOnline: navigator.onLine,
+  uiHidden: false,
+  settingsSheetOpen: false,
   settings: {
     theme: 'light',
     fontSize: 100,
@@ -82,6 +98,14 @@ export const state = {
 export function showLibrary() {
   state.currentView = 'library';
   state.currentArticleId = null;
+
+  // Reset reader state
+  state.uiHidden = false;
+  state.settingsSheetOpen = false;
+  elements.readerHeader?.classList.remove('reader-header--hidden');
+  elements.settingsSheet?.classList.remove('settings-sheet--open');
+  elements.settingsSheetBackdrop?.classList.remove('sheet-backdrop--visible');
+  elements.settingsFab?.classList.remove('fab--hidden');
 
   document.body.dataset.view = 'library';
   elements.libraryView.hidden = false;
@@ -277,6 +301,9 @@ export function updateSettingsUI() {
   elements.lineHeightSlider.value = state.settings.lineHeight;
   const lineHeightLabels = { 140: 'Compact', 160: 'Tight', 180: 'Normal', 200: 'Relaxed', 220: 'Loose' };
   elements.lineHeightValue.textContent = lineHeightLabels[state.settings.lineHeight] || 'Normal';
+
+  // Also update sheet UI
+  updateSheetUI();
 }
 
 /**
@@ -350,4 +377,107 @@ export function loadSettings(savedSettings) {
     state.settings = { ...state.settings, ...savedSettings };
   }
   applySettings();
+}
+
+// ========================================
+// Immersive Mode
+// ========================================
+
+/**
+ * Toggle UI visibility (header)
+ */
+export function toggleUI() {
+  if (state.uiHidden) {
+    showUI();
+  } else {
+    hideUI();
+  }
+}
+
+/**
+ * Hide UI (enter immersive mode)
+ */
+export function hideUI() {
+  state.uiHidden = true;
+  elements.readerHeader?.classList.add('reader-header--hidden');
+  // Also close settings sheet if open
+  if (state.settingsSheetOpen) {
+    closeSettingsSheet();
+  }
+}
+
+/**
+ * Show UI (exit immersive mode)
+ */
+export function showUI() {
+  state.uiHidden = false;
+  elements.readerHeader?.classList.remove('reader-header--hidden');
+}
+
+// ========================================
+// Settings Sheet (Reader)
+// ========================================
+
+/**
+ * Open the settings sheet
+ */
+export function openSettingsSheet() {
+  state.settingsSheetOpen = true;
+  updateSheetUI();
+  elements.settingsSheet?.classList.add('settings-sheet--open');
+  elements.settingsSheetBackdrop?.classList.add('sheet-backdrop--visible');
+  elements.settingsFab?.classList.add('fab--hidden');
+}
+
+/**
+ * Close the settings sheet
+ */
+export function closeSettingsSheet() {
+  state.settingsSheetOpen = false;
+  elements.settingsSheet?.classList.remove('settings-sheet--open');
+  elements.settingsSheetBackdrop?.classList.remove('sheet-backdrop--visible');
+  elements.settingsFab?.classList.remove('fab--hidden');
+}
+
+/**
+ * Toggle the settings sheet
+ */
+export function toggleSettingsSheet() {
+  if (state.settingsSheetOpen) {
+    closeSettingsSheet();
+  } else {
+    openSettingsSheet();
+  }
+}
+
+/**
+ * Update sheet UI to reflect current settings state
+ */
+export function updateSheetUI() {
+  // Theme buttons
+  elements.sheetThemeButtons?.forEach((btn) => {
+    btn.classList.toggle('active', btn.dataset.theme === state.settings.theme);
+  });
+
+  // Font buttons
+  elements.sheetFontButtons?.forEach((btn) => {
+    btn.classList.toggle('active', btn.dataset.font === state.settings.fontFamily);
+  });
+
+  // Font size slider
+  if (elements.sheetFontSizeSlider) {
+    elements.sheetFontSizeSlider.value = state.settings.fontSize;
+  }
+  if (elements.sheetFontSizeValue) {
+    elements.sheetFontSizeValue.textContent = `${state.settings.fontSize}%`;
+  }
+
+  // Line height slider
+  if (elements.sheetLineHeightSlider) {
+    elements.sheetLineHeightSlider.value = state.settings.lineHeight;
+  }
+  if (elements.sheetLineHeightValue) {
+    const lineHeightLabels = { 140: 'Compact', 160: 'Tight', 180: 'Normal', 200: 'Relaxed', 220: 'Loose' };
+    elements.sheetLineHeightValue.textContent = lineHeightLabels[state.settings.lineHeight] || 'Normal';
+  }
 }

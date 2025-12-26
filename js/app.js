@@ -7,6 +7,7 @@ import * as storage from './storage.js';
 import * as api from './api.js';
 import * as ui from './ui.js';
 import { renderMarkdown } from './markdown.js';
+import { initGestures, destroyGestures } from './gestures.js';
 import './components/article-card.js';
 
 // ========================================
@@ -40,6 +41,9 @@ async function init() {
 
   // Setup scroll progress tracking
   setupScrollProgress();
+
+  // Setup gestures for reader view
+  setupGestures();
 }
 
 /**
@@ -347,6 +351,50 @@ function attachEventListeners() {
   ui.elements.lineHeightSlider.addEventListener('change', () => {
     saveSettings();
   });
+
+  // Settings FAB (reader view)
+  ui.elements.settingsFab?.addEventListener('click', () => {
+    ui.openSettingsSheet();
+  });
+
+  // Settings sheet backdrop click to close
+  ui.elements.settingsSheetBackdrop?.addEventListener('click', () => {
+    ui.closeSettingsSheet();
+  });
+
+  // Sheet theme buttons
+  ui.elements.sheetThemeButtons?.forEach((btn) => {
+    btn.addEventListener('click', () => {
+      ui.setTheme(btn.dataset.theme);
+      saveSettings();
+    });
+  });
+
+  // Sheet font buttons
+  ui.elements.sheetFontButtons?.forEach((btn) => {
+    btn.addEventListener('click', () => {
+      ui.setFontFamily(btn.dataset.font);
+      saveSettings();
+    });
+  });
+
+  // Sheet font size slider
+  ui.elements.sheetFontSizeSlider?.addEventListener('input', (e) => {
+    ui.setFontSize(parseInt(e.target.value, 10));
+  });
+
+  ui.elements.sheetFontSizeSlider?.addEventListener('change', () => {
+    saveSettings();
+  });
+
+  // Sheet line height slider
+  ui.elements.sheetLineHeightSlider?.addEventListener('input', (e) => {
+    ui.setLineHeight(parseInt(e.target.value, 10));
+  });
+
+  ui.elements.sheetLineHeightSlider?.addEventListener('change', () => {
+    saveSettings();
+  });
 }
 
 // ========================================
@@ -427,6 +475,35 @@ function setupScrollProgress() {
         ticking = false;
       });
       ticking = true;
+    }
+  });
+}
+
+// ========================================
+// Gestures
+// ========================================
+
+/**
+ * Setup gesture handling for reader view
+ */
+function setupGestures() {
+  initGestures(ui.elements.readerContent, {
+    onTap: () => {
+      // Only toggle UI if sheet is closed
+      if (!ui.state.settingsSheetOpen) {
+        ui.toggleUI();
+      }
+    },
+    onSwipeUp: () => {
+      ui.hideUI();
+    },
+    onSwipeDown: () => {
+      // If sheet is open, close it. Otherwise show UI.
+      if (ui.state.settingsSheetOpen) {
+        ui.closeSettingsSheet();
+      } else {
+        ui.showUI();
+      }
     }
   });
 }
