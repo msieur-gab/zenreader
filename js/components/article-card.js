@@ -15,12 +15,19 @@ template.innerHTML = `
       display: flex;
       flex-direction: column;
       height: 100%;
-      min-height: 140px;
-      padding: 1rem;
+      min-height: 120px;
+      padding: 0.75rem;
       background: var(--bg-secondary, #f8fafc);
       border-radius: var(--radius-lg, 0.75rem);
       cursor: pointer;
       transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    @media (min-width: 640px) {
+      .card {
+        min-height: 140px;
+        padding: 1rem;
+      }
     }
 
     .card:hover {
@@ -46,7 +53,7 @@ template.innerHTML = `
 
     .card__title {
       flex: 1;
-      font-size: 1rem;
+      font-size: 0.875rem;
       font-weight: 600;
       color: var(--text-primary, #1e293b);
       line-height: 1.4;
@@ -54,6 +61,12 @@ template.innerHTML = `
       display: -webkit-box;
       -webkit-line-clamp: 2;
       -webkit-box-orient: vertical;
+    }
+
+    @media (min-width: 640px) {
+      .card__title {
+        font-size: 1rem;
+      }
     }
 
     .card__delete {
@@ -89,25 +102,41 @@ template.innerHTML = `
 
     .card__excerpt {
       flex: 1;
-      font-size: 0.875rem;
+      font-size: 0.75rem;
       color: var(--text-secondary, #64748b);
-      line-height: 1.5;
+      line-height: 1.4;
       overflow: hidden;
       display: -webkit-box;
       -webkit-line-clamp: 2;
       -webkit-box-orient: vertical;
-      margin-bottom: 0.75rem;
+      margin-bottom: 0.5rem;
+    }
+
+    @media (min-width: 640px) {
+      .card__excerpt {
+        font-size: 0.875rem;
+        line-height: 1.5;
+        margin-bottom: 0.75rem;
+      }
     }
 
     .card__meta {
       display: flex;
       align-items: center;
-      gap: 1rem;
+      gap: 0.5rem;
       margin-top: auto;
-      padding-top: 0.75rem;
+      padding-top: 0.5rem;
       border-top: 1px solid var(--bg-tertiary, #e2e8f0);
-      font-size: 0.75rem;
+      font-size: 0.625rem;
       color: var(--text-muted, #94a3b8);
+    }
+
+    @media (min-width: 640px) {
+      .card__meta {
+        gap: 1rem;
+        padding-top: 0.75rem;
+        font-size: 0.75rem;
+      }
     }
 
     .card__site {
