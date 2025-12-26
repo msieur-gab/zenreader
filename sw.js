@@ -3,7 +3,7 @@
  * Handles caching and offline support
  */
 
-const CACHE_NAME = 'zenkeeper-v1';
+const CACHE_NAME = 'zenkeeper-v2';
 const STATIC_ASSETS = [
   '/',
   '/index.html',
@@ -13,6 +13,7 @@ const STATIC_ASSETS = [
   '/js/ui.js',
   '/js/reader-article.js',
   '/js/gestures.js',
+  '/js/markdown.js',
   '/js/components/article-card.js',
   '/manifest.json',
   '/icons/icon.svg',

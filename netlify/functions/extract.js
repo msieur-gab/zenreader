@@ -6,6 +6,14 @@
 const { JSDOM } = require('jsdom');
 const { Readability } = require('@mozilla/readability');
 const fetch = require('node-fetch');
+const TurndownService = require('turndown');
+
+// Initialize Turndown with ATX-style headings
+const turndown = new TurndownService({
+  headingStyle: 'atx',
+  codeBlockStyle: 'fenced',
+  bulletListMarker: '-'
+});
 
 exports.handler = async (event) => {
   // CORS headers
@@ -112,13 +120,16 @@ exports.handler = async (event) => {
     const metaOgSiteName = document.querySelector('meta[property="og:site_name"]')?.content;
     const metaPublishedTime = document.querySelector('meta[property="article:published_time"]')?.content;
 
+    // Convert HTML content to Markdown
+    const markdown = turndown.turndown(article.content);
+
     return {
       statusCode: 200,
       headers,
       body: JSON.stringify({
         title: article.title || 'Untitled',
         author: article.byline || metaAuthor || null,
-        content: article.content,
+        markdown: markdown,
         textContent: article.textContent,
         excerpt: article.excerpt || '',
         siteName: article.siteName || metaOgSiteName || parsedUrl.hostname.replace(/^www\./, ''),

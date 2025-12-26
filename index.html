@@ -152,11 +152,26 @@
             <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path>
           </svg>
         </button>
+        <button id="download-btn" class="icon-btn" aria-label="Download article" title="Download as Markdown">
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+            <polyline points="7 10 12 15 17 10"></polyline>
+            <line x1="12" y1="15" x2="12" y2="3"></line>
+          </svg>
+        </button>
       </div>
     </header>
 
     <main class="main">
       <aside class="sidebar" id="sidebar">
+        <div class="sidebar__section">
+          <header class="sidebar__header">
+            <h2>Contents</h2>
+          </header>
+          <ul class="sidebar__toc" id="toc-list">
+            <!-- Dynamically populated from headings -->
+          </ul>
+        </div>
         <div class="sidebar__section">
           <header class="sidebar__header">
             <h2>Bookmarks</h2>

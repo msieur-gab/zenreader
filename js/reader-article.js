@@ -1,31 +1,39 @@
 /**
  * ZenKeeper - Article Reader Module
- * Renders article HTML content with progress tracking
+ * Renders markdown content with progress tracking and TOC support
  */
 
 import * as ui from './ui.js';
+import { renderMarkdown, extractHeadings } from './markdown.js';
 
 let container = null;
 let contentElement = null;
 let onNavigateCallback = null;
 let scrollTimeout = null;
+let currentHeadings = [];
 
 /**
  * Initialize the article reader
- * @param {string} content - HTML content
+ * @param {string} markdown - Markdown content
  * @param {Object} options - Reader options
- * @returns {Promise<Object>} Reader metadata
+ * @returns {Promise<Object>} Reader metadata including headings
  */
-export async function initArticle(content, options = {}) {
+export async function initArticle(markdown, options = {}) {
   container = ui.elements.viewerContainer;
 
   // Clear container
   container.innerHTML = '';
 
+  // Extract headings for TOC before rendering
+  currentHeadings = extractHeadings(markdown);
+
+  // Render markdown to HTML
+  const htmlContent = renderMarkdown(markdown);
+
   // Create content wrapper
   contentElement = document.createElement('div');
   contentElement.className = 'article-content';
-  contentElement.innerHTML = content;
+  contentElement.innerHTML = htmlContent;
 
   // Apply theme
   applyTheme(ui.state.theme);
@@ -55,6 +63,7 @@ export async function initArticle(content, options = {}) {
     metadata: {
       wordCount
     },
+    headings: currentHeadings,
     totalPages: 100 // Use percentage as "pages"
   };
 }
@@ -149,6 +158,26 @@ export function scrollTo(percentage) {
     top: scrollTop,
     behavior: 'smooth'
   });
+}
+
+/**
+ * Scroll to a heading by its ID
+ * @param {string} headingId - The heading ID to scroll to
+ */
+export function scrollToHeading(headingId) {
+  if (!contentElement) return;
+  const heading = contentElement.querySelector(`#${CSS.escape(headingId)}`);
+  if (heading) {
+    heading.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+}
+
+/**
+ * Get current headings
+ * @returns {Array} Array of heading objects
+ */
+export function getHeadings() {
+  return currentHeadings;
 }
 
 /**

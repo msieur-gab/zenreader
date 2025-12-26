@@ -567,6 +567,56 @@ body {
   color: var(--danger);
 }
 
+/* Table of Contents */
+.sidebar__toc {
+  list-style: none;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  padding: var(--space-sm);
+  flex: 1;
+  max-height: 40vh;
+}
+
+.sidebar__toc .toc-empty {
+  color: var(--text-muted);
+  font-size: 0.75rem;
+  text-align: center;
+  padding: var(--space-md);
+}
+
+.sidebar__toc .toc-item {
+  padding: var(--space-xs) var(--space-md);
+  font-size: 0.8125rem;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: background-color var(--transition-fast);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.sidebar__toc .toc-item:hover {
+  background-color: var(--accent-light);
+  color: var(--accent);
+}
+
+/* TOC heading level indentation */
+.sidebar__toc .toc-level-1 {
+  font-weight: 600;
+  padding-left: var(--space-md);
+}
+
+.sidebar__toc .toc-level-2 {
+  padding-left: calc(var(--space-md) + var(--space-md));
+  color: var(--text-secondary);
+}
+
+.sidebar__toc .toc-level-3 {
+  padding-left: calc(var(--space-md) + var(--space-xl));
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+
 /* ----------------------------------------
    Reader Content
    ---------------------------------------- */

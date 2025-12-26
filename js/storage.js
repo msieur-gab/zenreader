@@ -28,28 +28,28 @@ async function getArticlesDirectory(create = false) {
 }
 
 /**
- * Save article content to OPFS
+ * Save article content (Markdown) to OPFS
  * @param {number} id - Article ID
- * @param {string} content - HTML content
+ * @param {string} markdown - Markdown content
  */
-async function saveArticleContent(id, content) {
+async function saveArticleContent(id, markdown) {
   const articlesDir = await getArticlesDirectory(true);
-  const fileName = `${id}.html`;
+  const fileName = `${id}.md`;
   const fileHandle = await articlesDir.getFileHandle(fileName, { create: true });
   const writable = await fileHandle.createWritable();
-  await writable.write(content);
+  await writable.write(markdown);
   await writable.close();
 }
 
 /**
- * Get article content from OPFS
+ * Get article content (Markdown) from OPFS
  * @param {number} id - Article ID
- * @returns {Promise<string>}
+ * @returns {Promise<string>} Markdown content
  */
 async function getArticleContent(id) {
   try {
     const articlesDir = await getArticlesDirectory();
-    const fileName = `${id}.html`;
+    const fileName = `${id}.md`;
     const fileHandle = await articlesDir.getFileHandle(fileName);
     const file = await fileHandle.getFile();
     return file.text();
@@ -66,11 +66,31 @@ async function getArticleContent(id) {
 async function deleteArticleContent(id) {
   try {
     const articlesDir = await getArticlesDirectory();
-    const fileName = `${id}.html`;
+    const fileName = `${id}.md`;
     await articlesDir.removeEntry(fileName);
   } catch (error) {
     console.warn('Could not delete article content:', error);
   }
+}
+
+/**
+ * Download article as Markdown file
+ * @param {number} id - Article ID
+ * @param {string} title - Article title for filename
+ */
+export async function downloadArticle(id, title) {
+  const markdown = await getArticleContent(id);
+  const blob = new Blob([markdown], { type: 'text/markdown' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  // Sanitize title for filename
+  const safeTitle = title.replace(/[^a-zA-Z0-9\s-]/g, '').trim().replace(/\s+/g, '-');
+  a.download = `${safeTitle}.md`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
 }
 
 // ========================================
@@ -83,6 +103,11 @@ async function deleteArticleContent(id) {
  * @returns {Promise<number>} The new article ID
  */
 export async function addArticle(articleData) {
+  // Calculate word count from text content
+  const wordCount = articleData.textContent
+    ? articleData.textContent.trim().split(/\s+/).length
+    : 0;
+
   // Add metadata to database
   const id = await db.articles.add({
     title: articleData.title || 'Untitled',
@@ -90,14 +115,14 @@ export async function addArticle(articleData) {
     siteName: articleData.siteName || null,
     url: articleData.url,
     excerpt: articleData.excerpt || null,
-    wordCount: articleData.wordCount || 0,
+    wordCount: wordCount,
     publishedTime: articleData.publishedTime || null,
     addedAt: Date.now(),
     lastReadAt: null
   });
 
-  // Save content to OPFS
-  await saveArticleContent(id, articleData.content);
+  // Save markdown content to OPFS
+  await saveArticleContent(id, articleData.markdown);
 
   return id;
 }
@@ -134,12 +159,12 @@ export async function getArticle(id) {
     throw new Error('Article not found');
   }
 
-  const content = await getArticleContent(id);
+  const markdown = await getArticleContent(id);
 
   // Update last read time
   await db.articles.update(id, { lastReadAt: Date.now() });
 
-  return { ...article, content };
+  return { ...article, markdown };
 }
 
 /**

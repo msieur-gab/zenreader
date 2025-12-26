@@ -10,6 +10,9 @@ import * as ui from './ui.js';
 import * as articleReader from './reader-article.js';
 import { initGestures, updateCallbacks } from './gestures.js';
 
+// Track current article for download
+let currentArticleTitle = null;
+
 // ========================================
 // Application State
 // ========================================
@@ -148,14 +151,15 @@ async function openArticle(articleId) {
     // Get article from storage
     const article = await storage.getArticle(articleId);
     currentArticleId = articleId;
+    currentArticleTitle = article.title;
 
     ui.setLoading('Rendering content...', 50);
 
     // Get saved progress
     const progress = await storage.getProgress(articleId);
 
-    // Initialize reader
-    const result = await articleReader.initArticle(article.content, {
+    // Initialize reader with markdown content
+    const result = await articleReader.initArticle(article.markdown, {
       scrollPosition: progress?.percentage,
       onNavigate: handleNavigation
     });
@@ -169,7 +173,7 @@ async function openArticle(articleId) {
     // Get bookmarks
     const bookmarks = await storage.getBookmarks(articleId);
 
-    // Update UI state
+    // Update UI state with headings for TOC
     ui.setReading({
       metadata: {
         title: article.title,
@@ -177,6 +181,7 @@ async function openArticle(articleId) {
         siteName: article.siteName,
         url: article.url
       },
+      headings: result.headings || [],
       bookmarks,
       totalPages: 100,
       currentPage: progress?.percentage || 0,
@@ -237,8 +242,32 @@ async function deleteArticle(articleId, title) {
 function backToLibrary() {
   articleReader.destroy();
   currentArticleId = null;
+  currentArticleTitle = null;
   ui.showLibrary();
   loadLibrary();
+}
+
+/**
+ * Download current article as markdown
+ */
+async function downloadCurrentArticle() {
+  if (!currentArticleId || !currentArticleTitle) return;
+  try {
+    await storage.downloadArticle(currentArticleId, currentArticleTitle);
+    ui.showToast('Article downloaded');
+  } catch (error) {
+    console.error('Download error:', error);
+    ui.showToast('Failed to download article');
+  }
+}
+
+/**
+ * Handle TOC item click
+ * @param {string} headingId - The heading ID to scroll to
+ */
+function goToHeading(headingId) {
+  articleReader.scrollToHeading(headingId);
+  ui.updateState({ sidebarOpen: false });
 }
 
 // ========================================
@@ -372,6 +401,17 @@ function setupEventListeners() {
 
   // Bookmark button
   ui.elements.bookmarkBtn?.addEventListener('click', toggleBookmark);
+
+  // Download button
+  ui.elements.downloadBtn?.addEventListener('click', downloadCurrentArticle);
+
+  // TOC list events (delegated)
+  ui.elements.tocList?.addEventListener('click', (e) => {
+    const li = e.target.closest('li');
+    if (li?.dataset.headingId) {
+      goToHeading(li.dataset.headingId);
+    }
+  });
 
   // Page navigation (scroll by viewport)
   ui.elements.prevPage?.addEventListener('click', () => articleReader.prev());

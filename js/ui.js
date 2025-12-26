@@ -42,8 +42,12 @@ export function getElements() {
 
     // Sidebar
     sidebar: document.getElementById('sidebar'),
+    tocList: document.getElementById('toc-list'),
     bookmarkCount: document.getElementById('bookmark-count'),
     bookmarkList: document.getElementById('bookmark-list'),
+
+    // Download
+    downloadBtn: document.getElementById('download-btn'),
 
     // Reader
     reader: document.getElementById('reader'),
@@ -111,6 +115,7 @@ export const state = {
 
   // Article data
   metadata: null,
+  headings: [],
   bookmarks: [],
   currentPage: 0,
   totalPages: 100,
@@ -239,6 +244,11 @@ function render(current, prev) {
   if (current.bookmarks !== prev.bookmarks) {
     renderBookmarks(current.bookmarks);
   }
+
+  // TOC (headings)
+  if (current.headings !== prev.headings) {
+    renderTOC(current.headings);
+  }
 }
 
 /**
@@ -277,6 +287,33 @@ function renderBookmarks(bookmarks) {
       </button>
     `;
     els.bookmarkList.appendChild(li);
+  });
+}
+
+/**
+ * Render table of contents (headings)
+ * @param {Array} headings - Array of heading objects with level, text, id
+ */
+function renderTOC(headings) {
+  const els = getElements();
+  if (!els.tocList) return;
+
+  els.tocList.innerHTML = '';
+
+  if (!headings || headings.length === 0) {
+    const li = document.createElement('li');
+    li.className = 'toc-empty';
+    li.textContent = 'No headings found';
+    els.tocList.appendChild(li);
+    return;
+  }
+
+  headings.forEach(heading => {
+    const li = document.createElement('li');
+    li.className = `toc-item toc-level-${heading.level}`;
+    li.dataset.headingId = heading.id;
+    li.textContent = heading.text;
+    els.tocList.appendChild(li);
   });
 }
 
