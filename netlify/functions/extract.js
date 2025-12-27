@@ -5,8 +5,8 @@
 
 const { JSDOM } = require('jsdom');
 const { Readability } = require('@mozilla/readability');
-const fetch = require('node-fetch');
 const TurndownService = require('turndown');
+// Node 18+ has native fetch, no need for node-fetch
 
 // Initialize Turndown with ATX-style headings
 const turndown = new TurndownService({
