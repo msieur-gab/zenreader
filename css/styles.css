@@ -1034,3 +1034,35 @@ button:focus:not(:focus-visible),
 a:focus:not(:focus-visible) {
   outline: none;
 }
+
+/* ----------------------------------------
+   Update Banner
+   ---------------------------------------- */
+.update-banner {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 2000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-md);
+  padding: var(--space-md) var(--space-lg);
+  background-color: var(--accent);
+  color: white;
+  font-size: 0.875rem;
+  font-weight: 500;
+  animation: slideUp var(--transition-normal) ease-out;
+}
+
+.update-banner .btn {
+  background-color: white;
+  color: var(--accent);
+  padding: var(--space-xs) var(--space-md);
+  font-size: 0.75rem;
+}
+
+.update-banner .btn:hover {
+  background-color: var(--bg-secondary);
+}

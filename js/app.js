@@ -492,12 +492,64 @@ async function init() {
   console.log('ZenKeeper ready!');
 }
 
-// Register service worker
+// Register service worker with update handling
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
     navigator.serviceWorker.register('/sw.js')
-      .then(reg => console.log('SW registered:', reg.scope))
+      .then(reg => {
+        console.log('SW registered:', reg.scope);
+
+        // Check for updates periodically (every 60 seconds)
+        setInterval(() => reg.update(), 60000);
+
+        // Handle updates
+        reg.addEventListener('updatefound', () => {
+          const newWorker = reg.installing;
+
+          newWorker.addEventListener('statechange', () => {
+            // New service worker is installed and waiting
+            if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+              showUpdateNotification(newWorker);
+            }
+          });
+        });
+
+        // Check if there's already a waiting worker on page load
+        if (reg.waiting) {
+          showUpdateNotification(reg.waiting);
+        }
+      })
       .catch(err => console.warn('SW registration failed:', err));
+
+    // Reload page when new service worker takes over
+    let refreshing = false;
+    navigator.serviceWorker.addEventListener('controllerchange', () => {
+      if (!refreshing) {
+        refreshing = true;
+        window.location.reload();
+      }
+    });
+  });
+}
+
+/**
+ * Show update notification to user
+ * @param {ServiceWorker} worker - The waiting service worker
+ */
+function showUpdateNotification(worker) {
+  // Create update banner
+  const banner = document.createElement('div');
+  banner.className = 'update-banner';
+  banner.innerHTML = `
+    <span>A new version is available!</span>
+    <button id="update-btn" class="btn btn--primary">Update</button>
+  `;
+  document.body.appendChild(banner);
+
+  // Handle update button click
+  document.getElementById('update-btn').addEventListener('click', () => {
+    banner.remove();
+    worker.postMessage('skipWaiting');
   });
 }
 

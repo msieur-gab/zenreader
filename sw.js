@@ -3,7 +3,7 @@
  * Handles caching and offline support
  */
 
-const CACHE_NAME = 'zenkeeper-v2';
+const CACHE_NAME = 'zenkeeper-v3';
 const STATIC_ASSETS = [
   '/',
   '/index.html',
@@ -25,7 +25,7 @@ self.addEventListener('install', event => {
   event.waitUntil(
     caches.open(CACHE_NAME)
       .then(cache => cache.addAll(STATIC_ASSETS))
-      .then(() => self.skipWaiting())
+    // Don't skipWaiting - let the app control when to update
   );
 });
 
@@ -40,6 +40,13 @@ self.addEventListener('activate', event => {
       ))
       .then(() => self.clients.claim())
   );
+});
+
+// Listen for skip waiting message from the app
+self.addEventListener('message', event => {
+  if (event.data === 'skipWaiting') {
+    self.skipWaiting();
+  }
 });
 
 // Fetch event - serve from cache, fallback to network
