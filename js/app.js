@@ -511,8 +511,23 @@ function setupInstallPrompt() {
   const banner = document.getElementById('install-banner');
   const installBtn = document.getElementById('install-btn');
   const dismissBtn = document.getElementById('install-dismiss');
+  const bannerText = banner?.querySelector('span');
 
   if (!banner || !installBtn) return;
+
+  // Check if already installed (standalone mode)
+  const isInstalled = window.matchMedia('(display-mode: standalone)').matches
+    || window.navigator.standalone === true;
+
+  if (isInstalled) {
+    console.log('App already installed');
+    return;
+  }
+
+  // Don't show if already dismissed this session
+  if (sessionStorage.getItem('installDismissed')) {
+    return;
+  }
 
   // Capture the install prompt event
   window.addEventListener('beforeinstallprompt', (e) => {
@@ -521,6 +536,19 @@ function setupInstallPrompt() {
     banner.hidden = false;
     console.log('Install prompt available');
   });
+
+  // Fallback: show manual instructions after timeout if beforeinstallprompt didn't fire
+  setTimeout(() => {
+    if (!deferredPrompt && banner.hidden !== false) {
+      // Show manual install instructions
+      if (bannerText) {
+        bannerText.textContent = 'Install: tap browser menu → "Add to Home Screen"';
+      }
+      installBtn.hidden = true;
+      banner.hidden = false;
+      console.log('Showing manual install instructions');
+    }
+  }, 3000);
 
   // Handle install button click
   installBtn.addEventListener('click', async () => {
@@ -541,11 +569,6 @@ function setupInstallPrompt() {
     // Remember dismissal for this session
     sessionStorage.setItem('installDismissed', 'true');
   });
-
-  // Don't show if already dismissed this session
-  if (sessionStorage.getItem('installDismissed')) {
-    banner.hidden = true;
-  }
 
   // Hide banner if app is already installed
   window.addEventListener('appinstalled', () => {
