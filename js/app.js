@@ -489,7 +489,28 @@ async function init() {
   // Handle shared URLs
   handleShareTarget();
 
+  // Request persistent storage to prevent data loss
+  requestPersistentStorage();
+
   console.log('ZenKeeper ready!');
+}
+
+/**
+ * Request persistent storage to prevent browser from evicting IndexedDB data
+ */
+async function requestPersistentStorage() {
+  if (navigator.storage && navigator.storage.persist) {
+    const isPersisted = await navigator.storage.persisted();
+    if (!isPersisted) {
+      const granted = await navigator.storage.persist();
+      const status = granted ? 'Storage: persistent' : 'Storage: temporary';
+      console.log(status);
+      ui.showToast(status, 2000);
+    } else {
+      console.log('Storage: persistent (already granted)');
+      ui.showToast('Storage: persistent', 2000);
+    }
+  }
 }
 
 // Register service worker with update handling

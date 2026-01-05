@@ -3,7 +3,7 @@
  * Handles caching and offline support
  */
 
-const CACHE_NAME = 'zenkeeper-v3';
+const CACHE_NAME = 'zenkeeper-v5';
 const STATIC_ASSETS = [
   '/',
   '/index.html',
@@ -17,6 +17,8 @@ const STATIC_ASSETS = [
   '/js/components/article-card.js',
   '/manifest.json',
   '/icons/icon.svg',
+  '/icons/icon-192.png',
+  '/icons/icon-512.png',
   'https://cdn.jsdelivr.net/npm/dexie@3.2.4/dist/dexie.min.js'
 ];
 
