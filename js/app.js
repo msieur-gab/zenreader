@@ -489,10 +489,70 @@ async function init() {
   // Handle shared URLs
   handleShareTarget();
 
+  // Setup PWA install prompt
+  setupInstallPrompt();
+
   // Request persistent storage to prevent data loss
   requestPersistentStorage();
 
   console.log('ZenKeeper ready!');
+}
+
+// ========================================
+// PWA Install Prompt
+// ========================================
+
+let deferredPrompt = null;
+
+/**
+ * Setup PWA install prompt handling
+ */
+function setupInstallPrompt() {
+  const banner = document.getElementById('install-banner');
+  const installBtn = document.getElementById('install-btn');
+  const dismissBtn = document.getElementById('install-dismiss');
+
+  if (!banner || !installBtn) return;
+
+  // Capture the install prompt event
+  window.addEventListener('beforeinstallprompt', (e) => {
+    e.preventDefault();
+    deferredPrompt = e;
+    banner.hidden = false;
+    console.log('Install prompt available');
+  });
+
+  // Handle install button click
+  installBtn.addEventListener('click', async () => {
+    if (!deferredPrompt) return;
+
+    deferredPrompt.prompt();
+    const { outcome } = await deferredPrompt.userChoice;
+    console.log(`Install outcome: ${outcome}`);
+    ui.showToast(outcome === 'accepted' ? 'Installing...' : 'Install cancelled');
+
+    deferredPrompt = null;
+    banner.hidden = true;
+  });
+
+  // Handle dismiss button click
+  dismissBtn.addEventListener('click', () => {
+    banner.hidden = true;
+    // Remember dismissal for this session
+    sessionStorage.setItem('installDismissed', 'true');
+  });
+
+  // Don't show if already dismissed this session
+  if (sessionStorage.getItem('installDismissed')) {
+    banner.hidden = true;
+  }
+
+  // Hide banner if app is already installed
+  window.addEventListener('appinstalled', () => {
+    banner.hidden = true;
+    deferredPrompt = null;
+    console.log('App installed');
+  });
 }
 
 /**

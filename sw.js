@@ -3,7 +3,7 @@
  * Handles caching and offline support
  */
 
-const CACHE_NAME = 'zenkeeper-v5';
+const CACHE_NAME = 'zenkeeper-v6';
 const STATIC_ASSETS = [
   '/',
   '/index.html',
