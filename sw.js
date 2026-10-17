@@ -3,22 +3,22 @@
  * Handles offline caching and share target requests
  */
 
-const CACHE_NAME = 'zenreader-v5';
+const CACHE_NAME = 'zenreader-v6';
 const STATIC_ASSETS = [
-  '/',
-  '/index.html',
-  '/manifest.json',
-  '/css/styles.css',
-  '/js/app.js',
-  '/js/storage.js',
-  '/js/api.js',
-  '/js/ui.js',
-  '/js/markdown.js',
-  '/js/gestures.js',
-  '/js/components/article-card.js',
-  '/icons/icon.svg',
-  '/icons/icon-192.png',
-  '/icons/icon-512.png'
+  './',
+  './index.html',
+  './manifest.json',
+  './css/styles.css',
+  './js/app.js',
+  './js/storage.js',
+  './js/api.js',
+  './js/ui.js',
+  './js/markdown.js',
+  './js/gestures.js',
+  './js/components/article-card.js',
+  './icons/icon.svg',
+  './icons/icon-192.png',
+  './icons/icon-512.png'
 ];
 
 // External CDN resources to cache
@@ -50,7 +50,7 @@ self.addEventListener('activate', (event) => {
     caches.keys().then((keys) =>
       Promise.all(
         keys
-          .filter((key) => key !== CACHE_NAME)
+          .filter((key) => key.startsWith('zenreader-') && key !== CACHE_NAME)
           .map((key) => caches.delete(key))
       )
     )
@@ -64,10 +64,10 @@ self.addEventListener('fetch', (event) => {
 
   // Handle share target requests - serve index.html
   // The app will parse query params on load
-  if (url.pathname === '/share') {
+  if (url.pathname.endsWith('/share')) {
     event.respondWith(
-      caches.match('/index.html').then((response) => {
-        return response || fetch('/index.html');
+      caches.match('./index.html').then((response) => {
+        return response || fetch('./index.html');
       })
     );
     return;
